@@ -1,4 +1,4 @@
-package com.example.vocabumate
+package com.example.vocabumate.ui
 
 import androidx.compose.foundation.layout.Column
 import androidx.compose.material3.Text
