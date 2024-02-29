@@ -33,7 +33,8 @@ fun HomeScreen(
     },
   ) { innerPadding ->
     HomeBody(
-      wordUiState = viewModel.wordUiState, defineAction = viewModel::getDefinition,
+      wordUiState = viewModel.wordUiState,
+      defineAction = viewModel::getDefinition,
       modifier = Modifier
         .padding(innerPadding)
         .fillMaxSize()
@@ -43,7 +44,9 @@ fun HomeScreen(
 
 @Composable
 private fun HomeBody(
-  wordUiState: WordUiState, defineAction: (String) -> Unit, modifier: Modifier = Modifier
+  wordUiState: WordUiState,
+  defineAction: (String) -> Unit,
+  modifier: Modifier = Modifier
 ) {
   Column(modifier = modifier) {
     Column(modifier = Modifier.weight(1F)) {
