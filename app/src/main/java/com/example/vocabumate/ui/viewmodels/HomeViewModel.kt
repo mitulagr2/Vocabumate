@@ -5,36 +5,35 @@ import androidx.compose.runtime.getValue
 import androidx.compose.runtime.mutableStateOf
 import androidx.compose.runtime.setValue
 import androidx.lifecycle.ViewModel
-import androidx.lifecycle.ViewModelProvider
 import androidx.lifecycle.viewModelScope
-import androidx.lifecycle.viewmodel.initializer
-import androidx.lifecycle.viewmodel.viewModelFactory
-import com.example.vocabumate.VocabumateApplication
-import com.example.vocabumate.data.WordsRepository
+import com.example.vocabumate.data.local.LocalWordsRepository
+import com.example.vocabumate.data.local.Word
+import com.example.vocabumate.data.network.NetworkWordsRepository
+import kotlinx.coroutines.flow.SharingStarted
+import kotlinx.coroutines.flow.StateFlow
+import kotlinx.coroutines.flow.map
+import kotlinx.coroutines.flow.stateIn
 import kotlinx.coroutines.launch
 import java.io.IOException
 
-class HomeViewModel(private val wordsRepository: WordsRepository) : ViewModel() {
+class HomeViewModel(
+  localWordsRepository: LocalWordsRepository
+) : ViewModel() {
 
-  var wordUiState: WordUiState by mutableStateOf(WordUiState.Success(""))
-    private set
+  val homeUiState: StateFlow<HomeUiState> =
+    localWordsRepository.getAllWordsStream().map { HomeUiState(it) }
+      .stateIn(
+        scope = viewModelScope,
+        started = SharingStarted.WhileSubscribed(TIMEOUT_MILLIS),
+        initialValue = HomeUiState()
+      )
 
-  fun getDefinition(word: String) {
-    Log.d("ViewModel", word)
-    wordUiState = WordUiState.Loading
-    viewModelScope.launch {
-      wordUiState = try {
-        WordUiState.Success(wordsRepository.getDefinition(word))
-      } catch (e: IOException) {
-        Log.d("ViewModel", "" + e.message)
-        WordUiState.Error
-      }
-    }
+  companion object {
+    private const val TIMEOUT_MILLIS = 5_000L
   }
 }
 
-sealed interface WordUiState {
-  data class Success(val word: String) : WordUiState
-  data object Error : WordUiState
-  data object Loading : WordUiState
-}
+/**
+ * Ui State for HomeScreen
+ */
+data class HomeUiState(val wordList: List<Word> = listOf())

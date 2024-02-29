@@ -35,8 +35,7 @@ fun HomeScreen(
     },
   ) { innerPadding ->
     HomeBody(
-      wordUiState = viewModel.wordUiState,
-      defineAction = viewModel::getDefinition,
+      navigateToWordDetails,
       modifier = Modifier
         .padding(innerPadding)
         .fillMaxSize()
@@ -46,26 +45,13 @@ fun HomeScreen(
 
 @Composable
 private fun HomeBody(
-  wordUiState: WordUiState,
-  defineAction: (String) -> Unit,
+  navigateToWordDetails: (String) -> Unit,
   modifier: Modifier = Modifier
 ) {
   Column(modifier = modifier) {
     Column(modifier = Modifier.weight(1F)) {
-      when (wordUiState) {
-        is WordUiState.Loading -> Text(
-          text = "Loading..."
-        )
-
-        is WordUiState.Success -> Text(
-          text = wordUiState.word
-        )
-
-        is WordUiState.Error -> Text(
-          text = "Error."
-        )
-      }
+      Text(text = "Revise")
     }
-    InputBottomBar(defineAction)
+    InputBottomBar(navigateToWordDetails)
   }
 }
