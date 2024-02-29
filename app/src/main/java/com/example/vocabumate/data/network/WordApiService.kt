@@ -1,4 +1,4 @@
-package com.example.vocabumate.network
+package com.example.vocabumate.data.network
 
 import retrofit2.http.GET
 import retrofit2.http.Query

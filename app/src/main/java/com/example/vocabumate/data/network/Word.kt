@@ -1,4 +1,4 @@
-package com.example.vocabumate.network
+package com.example.vocabumate.data.network
 
 import kotlinx.serialization.Serializable
 
