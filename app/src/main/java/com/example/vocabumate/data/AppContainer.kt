@@ -9,7 +9,7 @@ import java.util.concurrent.TimeUnit
 
 
 interface AppContainer {
-  val vocabumateRepository: VocabumateRepository
+  val wordsRepository: WordsRepository
 }
 
 class DefaultAppContainer(context: Context) : AppContainer {
@@ -34,8 +34,8 @@ class DefaultAppContainer(context: Context) : AppContainer {
     retrofit.create(WordApiService::class.java)
   }
 
-  override val vocabumateRepository: VocabumateRepository by lazy {
-    NetworkVocabumateRepository(retrofitService)
+  override val wordsRepository: WordsRepository by lazy {
+    NetworkWordsRepository(retrofitService)
   }
 }
 

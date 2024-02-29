@@ -3,9 +3,12 @@ package com.example.vocabumate
 import android.os.Bundle
 import androidx.activity.ComponentActivity
 import androidx.activity.compose.setContent
+import androidx.compose.foundation.layout.fillMaxSize
+import androidx.compose.material3.MaterialTheme
+import androidx.compose.material3.Surface
 import androidx.compose.runtime.Composable
+import androidx.compose.ui.Modifier
 import androidx.compose.ui.tooling.preview.Preview
-import com.example.vocabumate.ui.App
 import com.example.vocabumate.ui.theme.VocabumateTheme
 
 class MainActivity : ComponentActivity() {
@@ -13,7 +16,13 @@ class MainActivity : ComponentActivity() {
     super.onCreate(savedInstanceState)
     setContent {
       VocabumateTheme {
-        App()
+        Surface(
+          modifier = Modifier.fillMaxSize(),
+          color = MaterialTheme.colorScheme.background
+        ) {
+          VocabumateApp()
+        }
+
       }
     }
   }
@@ -23,7 +32,13 @@ class MainActivity : ComponentActivity() {
 @Composable
 fun AppCompactPreview() {
   VocabumateTheme {
-    App()
+    Surface(
+      modifier = Modifier.fillMaxSize(),
+      color = MaterialTheme.colorScheme.background
+    ) {
+      VocabumateApp()
+    }
+
   }
 }
 
@@ -31,7 +46,13 @@ fun AppCompactPreview() {
 @Composable
 fun AppMediumPreview() {
   VocabumateTheme {
-    App()
+    Surface(
+      modifier = Modifier.fillMaxSize(),
+      color = MaterialTheme.colorScheme.background
+    ) {
+      VocabumateApp()
+    }
+
   }
 }
 
@@ -39,7 +60,13 @@ fun AppMediumPreview() {
 @Composable
 fun AppExpandedPreview() {
   VocabumateTheme {
-    App()
+    Surface(
+      modifier = Modifier.fillMaxSize(),
+      color = MaterialTheme.colorScheme.background
+    ) {
+      VocabumateApp()
+    }
+
   }
 }
 
