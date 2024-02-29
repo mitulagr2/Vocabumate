@@ -2,10 +2,11 @@ package com.example.vocabumate.data
 
 import android.content.Context
 import com.example.vocabumate.network.WordApiService
-import com.jakewharton.retrofit2.converter.kotlinx.serialization.asConverterFactory
-import kotlinx.serialization.json.Json
-import okhttp3.MediaType.Companion.toMediaType
+import okhttp3.OkHttpClient
 import retrofit2.Retrofit
+import retrofit2.converter.scalars.ScalarsConverterFactory
+import java.util.concurrent.TimeUnit
+
 
 interface AppContainer {
   val vocabumateRepository: VocabumateRepository
@@ -16,12 +17,17 @@ class DefaultAppContainer(context: Context) : AppContainer {
   private val baseUrl =
     "https://vocabumate.onrender.com"
 
-  /**
-   * Use the Retrofit builder to build a retrofit object using a kotlinx.serialization converter
-   */
+  private var okHttpClient: OkHttpClient = OkHttpClient.Builder()
+    .connectTimeout(1, TimeUnit.MINUTES)
+    .readTimeout(30, TimeUnit.SECONDS)
+    .writeTimeout(15, TimeUnit.SECONDS)
+    .build()
+
   private val retrofit = Retrofit.Builder()
-    .addConverterFactory(Json.asConverterFactory("application/json".toMediaType()))
+    .addConverterFactory(ScalarsConverterFactory.create())
+//    .addConverterFactory(Json.asConverterFactory("application/json".toMediaType()))
     .baseUrl(baseUrl)
+    .client(okHttpClient)
     .build()
 
   private val retrofitService: WordApiService by lazy {
