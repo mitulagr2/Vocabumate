@@ -1,8 +1,10 @@
 package com.example.vocabumate.ui.components
 
+import androidx.compose.foundation.layout.Column
 import androidx.compose.foundation.layout.Row
 import androidx.compose.material.icons.Icons
 import androidx.compose.material.icons.filled.Search
+import androidx.compose.material3.Button
 import androidx.compose.material3.ExperimentalMaterial3Api
 import androidx.compose.material3.FloatingActionButton
 import androidx.compose.material3.Icon
@@ -23,6 +25,9 @@ import androidx.compose.ui.graphics.Color
 import androidx.compose.ui.res.stringResource
 import androidx.compose.ui.unit.dp
 import com.example.vocabumate.R
+import com.example.vocabumate.ui.screens.HomeDestination
+import com.example.vocabumate.ui.screens.LikesDestination
+import com.example.vocabumate.ui.screens.ProfileDestination
 
 /**
  * App bar to display title and navigation.
@@ -30,6 +35,7 @@ import com.example.vocabumate.R
 @OptIn(ExperimentalMaterial3Api::class)
 @Composable
 fun VocabumateTopAppBar(
+  navigateTo: (String) -> Unit,
 //  canNavigateBack: Boolean,
 //  navigateUp: () -> Unit,
   modifier: Modifier = Modifier
@@ -42,19 +48,30 @@ fun VocabumateTopAppBar(
         spotColor = Color.DarkGray
       )
   ) {
-    TopAppBar(
-      title = { Text(stringResource(R.string.app_name)) },
-      //    navigationIcon = {
-      //      if (canNavigateBack) {
-      //        IconButton(onClick = navigateUp) {
-      //          Icon(
-      //            imageVector = Icons.Filled.ArrowBack,
-      //            contentDescription = stringResource(R.string.back_button)
-      //          )
-      //        }
-      //      }
-      //    }
-    )
+    Column {
+      TopAppBar(
+        title = { Text(stringResource(R.string.app_name)) },
+        //    navigationIcon = {
+        //      if (canNavigateBack) {
+        //        IconButton(onClick = navigateUp) {
+        //          Icon(
+        //            imageVector = Icons.Filled.ArrowBack,
+        //            contentDescription = stringResource(R.string.back_button)
+        //          )
+        //        }
+        //      }
+        //    }
+      )
+      Button(onClick = { navigateTo(HomeDestination.route) }) {
+        Text(text = "Home")
+      }
+      Button(onClick = { navigateTo(LikesDestination.route) }) {
+        Text(text = "Likes")
+      }
+      Button(onClick = { navigateTo(ProfileDestination.route) }) {
+        Text(text = "Profile")
+      }
+    }
   }
 }
 

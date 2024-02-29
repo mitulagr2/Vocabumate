@@ -23,13 +23,15 @@ object HomeDestination : NavigationDestination {
 
 @Composable
 fun HomeScreen(
+  navigateTo: (String) -> Unit,
+  navigateToWordDetails: (String) -> Unit,
   modifier: Modifier = Modifier,
   viewModel: HomeViewModel = viewModel(factory = AppViewModelProvider.Factory)
 ) {
   Scaffold(
     modifier = modifier,
     topBar = {
-      VocabumateTopAppBar()
+      VocabumateTopAppBar(navigateTo)
     },
   ) { innerPadding ->
     HomeBody(

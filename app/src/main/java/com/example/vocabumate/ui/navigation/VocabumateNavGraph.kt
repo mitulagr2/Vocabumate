@@ -7,9 +7,18 @@ import androidx.navigation.NavType
 import androidx.navigation.compose.NavHost
 import androidx.navigation.compose.composable
 import androidx.navigation.navArgument
+import com.example.vocabumate.ui.screens.AnalyticsDestination
+import com.example.vocabumate.ui.screens.AnalyticsScreen
+import com.example.vocabumate.ui.screens.DiscoverDestination
+import com.example.vocabumate.ui.screens.DiscoverScreen
 import com.example.vocabumate.ui.screens.HomeDestination
 import com.example.vocabumate.ui.screens.HomeScreen
-
+import com.example.vocabumate.ui.screens.LikesDestination
+import com.example.vocabumate.ui.screens.LikesScreen
+import com.example.vocabumate.ui.screens.ProfileDestination
+import com.example.vocabumate.ui.screens.ProfileScreen
+import com.example.vocabumate.ui.screens.WordDetailsDestination
+import com.example.vocabumate.ui.screens.WordDetailsScreen
 
 /**
  * Provides Navigation graph for the application.
@@ -25,43 +34,41 @@ fun VocabumateNavHost(
     modifier = modifier
   ) {
     composable(route = HomeDestination.route) {
-      HomeScreen()
+      HomeScreen(
+        navigateTo = navController::navigate,
+        navigateToWordDetails = { navController.navigate("${WordDetailsDestination.route}/$it") },
+      )
     }
-//    composable(route = HomeDestination.route) {
-//      HomeScreen(
-//        navigateToItemEntry = { navController.navigate(ItemEntryDestination.route) },
-//        navigateToItemUpdate = {
-//          navController.navigate("${ItemDetailsDestination.route}/${it}")
-//        }
-//      )
-//    }
-//    composable(route = ItemEntryDestination.route) {
-//      ItemEntryScreen(
-//        navigateBack = { navController.popBackStack() },
-//        onNavigateUp = { navController.navigateUp() }
-//      )
-//    }
-//    composable(
-//      route = ItemDetailsDestination.routeWithArgs,
-//      arguments = listOf(navArgument(ItemDetailsDestination.itemIdArg) {
-//        type = NavType.IntType
-//      })
-//    ) {
-//      ItemDetailsScreen(
-//        navigateToEditItem = { navController.navigate("${ItemEditDestination.route}/$it") },
-//        navigateBack = { navController.navigateUp() }
-//      )
-//    }
-//    composable(
-//      route = ItemEditDestination.routeWithArgs,
-//      arguments = listOf(navArgument(ItemEditDestination.itemIdArg) {
-//        type = NavType.IntType
-//      })
-//    ) {
-//      ItemEditScreen(
-//        navigateBack = { navController.popBackStack() },
-//        onNavigateUp = { navController.navigateUp() }
-//      )
-//    }
+    composable(route = LikesDestination.route) {
+      LikesScreen(
+        navigateTo = navController::navigate,
+        navigateToWordDetails = { navController.navigate("${WordDetailsDestination.route}/$it") },
+      )
+    }
+    composable(route = DiscoverDestination.route) {
+      DiscoverScreen(
+        navigateTo = navController::navigate,
+      )
+    }
+    composable(route = AnalyticsDestination.route) {
+      AnalyticsScreen(
+        navigateTo = navController::navigate,
+      )
+    }
+    composable(route = ProfileDestination.route) {
+      ProfileScreen(
+        navigateTo = navController::navigate,
+      )
+    }
+    composable(
+      route = WordDetailsDestination.routeWithArgs,
+      arguments = listOf(navArgument(WordDetailsDestination.wordArg) {
+        type = NavType.StringType
+      })
+    ) {
+      WordDetailsScreen(
+        navigateTo = navController::navigate,
+      )
+    }
   }
 }

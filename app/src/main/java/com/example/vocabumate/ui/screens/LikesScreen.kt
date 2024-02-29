@@ -18,12 +18,14 @@ object LikesDestination : NavigationDestination {
 
 @Composable
 fun LikesScreen(
+  navigateTo: (String) -> Unit,
+  navigateToWordDetails: (String) -> Unit,
   modifier: Modifier = Modifier
 ) {
   Scaffold(
     modifier = modifier,
     topBar = {
-      VocabumateTopAppBar()
+      VocabumateTopAppBar(navigateTo)
     },
   ) { innerPadding ->
     LikesBody(

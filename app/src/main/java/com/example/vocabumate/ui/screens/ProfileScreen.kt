@@ -18,12 +18,13 @@ object ProfileDestination : NavigationDestination {
 
 @Composable
 fun ProfileScreen(
+  navigateTo: (String) -> Unit,
   modifier: Modifier = Modifier
 ) {
   Scaffold(
     modifier = modifier,
     topBar = {
-      VocabumateTopAppBar()
+      VocabumateTopAppBar(navigateTo)
     },
   ) { innerPadding ->
     ProfileBody(
