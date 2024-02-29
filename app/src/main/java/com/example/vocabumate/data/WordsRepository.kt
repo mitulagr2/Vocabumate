@@ -2,12 +2,12 @@ package com.example.vocabumate.data
 
 import com.example.vocabumate.network.WordApiService
 
-interface VocabumateRepository {
+interface WordsRepository {
   suspend fun getDefinition(word: String): String
 }
 
-class NetworkVocabumateRepository(
+class NetworkWordsRepository(
   private val wordApiService: WordApiService
-) : VocabumateRepository {
+) : WordsRepository {
   override suspend fun getDefinition(word: String): String = wordApiService.getDefinition(word)
 }
