@@ -14,7 +14,10 @@ import androidx.compose.ui.draw.shadow
 import androidx.compose.ui.graphics.Color
 import androidx.compose.ui.res.stringResource
 import androidx.compose.ui.unit.dp
+import androidx.lifecycle.viewmodel.compose.viewModel
 import com.example.vocabumate.R
+import com.example.vocabumate.ui.screens.HomeScreen
+import com.example.vocabumate.ui.screens.VocabumateViewModel
 
 @Composable
 fun App(modifier: Modifier = Modifier) {
@@ -30,7 +33,12 @@ fun App(modifier: Modifier = Modifier) {
         .padding(innerPadding),
       color = MaterialTheme.colorScheme.background
     ) {
-      HomeScreen()
+      val vocabumateViewModel: VocabumateViewModel =
+        viewModel(factory = VocabumateViewModel.Factory)
+      HomeScreen(
+        wordUiState = vocabumateViewModel.wordUiState,
+        defineAction = vocabumateViewModel::getDefinition
+      )
     }
   }
 }
