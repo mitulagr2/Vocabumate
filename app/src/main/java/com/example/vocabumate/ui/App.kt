@@ -15,6 +15,7 @@ import androidx.compose.ui.graphics.Color
 import androidx.compose.ui.res.stringResource
 import androidx.compose.ui.unit.dp
 import com.example.vocabumate.R
+import com.example.vocabumate.ui.screens.HomeScreen
 
 @Composable
 fun App(modifier: Modifier = Modifier) {
