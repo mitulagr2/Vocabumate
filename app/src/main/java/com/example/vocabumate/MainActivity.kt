@@ -7,8 +7,8 @@ import androidx.compose.foundation.layout.fillMaxSize
 import androidx.compose.material3.MaterialTheme
 import androidx.compose.material3.Surface
 import androidx.compose.runtime.Composable
-import androidx.compose.ui.Modifier
 import androidx.compose.ui.tooling.preview.Preview
+import com.example.vocabumate.ui.App
 import com.example.vocabumate.ui.theme.VocabumateTheme
 
 class MainActivity : ComponentActivity() {
@@ -22,7 +22,6 @@ class MainActivity : ComponentActivity() {
         ) {
           VocabumateApp()
         }
-
       }
     }
   }
@@ -38,7 +37,6 @@ fun AppCompactPreview() {
     ) {
       VocabumateApp()
     }
-
   }
 }
 
@@ -52,7 +50,6 @@ fun AppMediumPreview() {
     ) {
       VocabumateApp()
     }
-
   }
 }
 
@@ -66,7 +63,6 @@ fun AppExpandedPreview() {
     ) {
       VocabumateApp()
     }
-
   }
 }
 
