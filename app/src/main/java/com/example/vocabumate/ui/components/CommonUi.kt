@@ -77,7 +77,7 @@ fun VocabumateTopAppBar(
 
 @Composable
 fun InputBottomBar(
-  defineAction: (String) -> Unit,
+  navigateToWordDetails: (String) -> Unit,
   modifier: Modifier = Modifier
 ) {
   var query by rememberSaveable {
@@ -113,7 +113,7 @@ fun InputBottomBar(
       //      )
     )
     FloatingActionButton(
-      onClick = { defineAction(query) }
+      onClick = { navigateToWordDetails(query) }
     ) {
       Icon(Icons.Filled.Search, contentDescription = "Search")
     }
