@@ -13,7 +13,6 @@ import com.example.vocabumate.data.network.NetworkWordsRepository
 import com.example.vocabumate.ui.screens.WordDetailsDestination
 import kotlinx.coroutines.flow.SharingStarted
 import kotlinx.coroutines.flow.StateFlow
-import kotlinx.coroutines.flow.filterNotNull
 import kotlinx.coroutines.flow.map
 import kotlinx.coroutines.flow.stateIn
 import kotlinx.coroutines.launch
@@ -35,22 +34,18 @@ class WordDetailsViewModel(
 
   val wordDetailsUiState: StateFlow<WordUiState> =
     localWordsRepository.getWordStream(word)
-      .filterNotNull()
       .map {
-        Log.d("WORDVIEWMODEL", it.toString())
-        WordUiState(isLocal = true, wordDetails = it)
+        if (it === null) {
+          getDefinition(word)
+          WordUiState()
+        } else {
+          WordUiState(isLocal = true, wordDetails = it)
+        }
       }.stateIn(
         scope = viewModelScope,
         started = SharingStarted.WhileSubscribed(TIMEOUT_MILLIS),
         initialValue = WordUiState()
       )
-
-  init {
-    Log.d("WORDVIEWMODEL", wordDetailsUiState.value.toString())
-    if (!wordDetailsUiState.value.isLocal) {
-      getDefinition(word)
-    }
-  }
 
   companion object {
     private const val TIMEOUT_MILLIS = 5_000L

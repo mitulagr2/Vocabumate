@@ -3,11 +3,19 @@ package com.example.vocabumate.ui.screens
 import androidx.compose.foundation.layout.Column
 import androidx.compose.foundation.layout.fillMaxSize
 import androidx.compose.foundation.layout.padding
+import androidx.compose.material.icons.Icons
+import androidx.compose.material.icons.filled.Favorite
+import androidx.compose.material.icons.filled.FavoriteBorder
+import androidx.compose.material3.Icon
+import androidx.compose.material3.IconButton
 import androidx.compose.material3.Scaffold
 import androidx.compose.material3.Text
 import androidx.compose.runtime.Composable
 import androidx.compose.runtime.collectAsState
+import androidx.compose.runtime.getValue
+import androidx.compose.runtime.rememberCoroutineScope
 import androidx.compose.ui.Modifier
+import androidx.compose.ui.graphics.vector.ImageVector
 import androidx.lifecycle.viewmodel.compose.viewModel
 import com.example.vocabumate.R
 import com.example.vocabumate.data.local.Word
@@ -15,6 +23,7 @@ import com.example.vocabumate.ui.AppViewModelProvider
 import com.example.vocabumate.ui.components.VocabumateTopAppBar
 import com.example.vocabumate.ui.navigation.NavigationDestination
 import com.example.vocabumate.ui.viewmodels.WordDetailsViewModel
+import kotlinx.coroutines.launch
 
 object WordDetailsDestination : NavigationDestination {
   override val route = "word_details"
@@ -29,7 +38,8 @@ fun WordDetailsScreen(
   modifier: Modifier = Modifier,
   viewModel: WordDetailsViewModel = viewModel(factory = AppViewModelProvider.Factory)
 ) {
-  val wordDetailsUiState = viewModel.wordDetailsUiState.collectAsState()
+  val coroutineScope = rememberCoroutineScope()
+  val wordDetailsUiState by viewModel.wordDetailsUiState.collectAsState()
 
   Scaffold(
     modifier = modifier,
@@ -38,7 +48,13 @@ fun WordDetailsScreen(
     },
   ) { innerPadding ->
     WordDetailsBody(
-      wordDetails = if (wordDetailsUiState.value.isLocal) wordDetailsUiState.value.wordDetails else viewModel.wordUiState.wordDetails,
+      wordDetails = if (wordDetailsUiState.isLocal) wordDetailsUiState.wordDetails else viewModel.wordUiState.wordDetails,
+      iconVector = if (wordDetailsUiState.isLocal) Icons.Filled.Favorite else Icons.Filled.FavoriteBorder,
+      btnAction = {
+        coroutineScope.launch {
+          if (wordDetailsUiState.isLocal) viewModel.deleteWord() else viewModel.saveWord()
+        }
+      },
       modifier = Modifier
         .padding(innerPadding)
         .fillMaxSize()
@@ -49,9 +65,14 @@ fun WordDetailsScreen(
 @Composable
 private fun WordDetailsBody(
   wordDetails: Word,
+  iconVector: ImageVector,
+  btnAction: () -> Unit,
   modifier: Modifier = Modifier
 ) {
   Column(modifier = modifier) {
+    IconButton(onClick = btnAction) {
+      Icon(iconVector, contentDescription = "Like")
+    }
     Text(text = wordDetails.word)
     Text(
       text = wordDetails.meaning
