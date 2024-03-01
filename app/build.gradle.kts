@@ -1,6 +1,7 @@
 plugins {
   id("com.android.application")
   id("org.jetbrains.kotlin.android")
+  id("com.google.devtools.ksp") version "1.9.21-1.0.15"
   id("org.jetbrains.kotlin.plugin.serialization") version "1.8.10"
 }
 
@@ -59,6 +60,7 @@ dependencies {
   implementation("androidx.compose.material3:material3")
 
   implementation("androidx.lifecycle:lifecycle-viewmodel-compose:2.7.0")
+  implementation("androidx.navigation:navigation-compose:2.7.7")
   // Retrofit
   implementation("com.squareup.retrofit2:retrofit:2.9.0")
   // Retrofit with Scalar Converter
@@ -68,6 +70,10 @@ dependencies {
   implementation("com.squareup.okhttp3:okhttp:4.11.0")
   // Kotlin serialization
   implementation("org.jetbrains.kotlinx:kotlinx-serialization-json:1.5.1")
+  //Room
+  implementation("androidx.room:room-runtime:${rootProject.extra["room_version"]}")
+  ksp("androidx.room:room-compiler:${rootProject.extra["room_version"]}")
+  implementation("androidx.room:room-ktx:${rootProject.extra["room_version"]}")
 
   testImplementation("junit:junit:4.13.2")
   androidTestImplementation("androidx.test.ext:junit:1.1.5")

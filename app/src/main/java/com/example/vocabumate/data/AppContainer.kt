@@ -1,7 +1,12 @@
 package com.example.vocabumate.data
 
 import android.content.Context
-import com.example.vocabumate.network.WordApiService
+import com.example.vocabumate.data.local.LocalWordsRepository
+import com.example.vocabumate.data.local.OfflineWordsRepository
+import com.example.vocabumate.data.local.VocabumateDatabase
+import com.example.vocabumate.data.network.NetworkWordsRepository
+import com.example.vocabumate.data.network.RemoteWordsRepository
+import com.example.vocabumate.data.network.WordApiService
 import okhttp3.OkHttpClient
 import retrofit2.Retrofit
 import retrofit2.converter.scalars.ScalarsConverterFactory
@@ -9,7 +14,8 @@ import java.util.concurrent.TimeUnit
 
 
 interface AppContainer {
-  val vocabumateRepository: VocabumateRepository
+  val localWordsRepository: LocalWordsRepository
+  val remoteWordsRepository: NetworkWordsRepository
 }
 
 class DefaultAppContainer(context: Context) : AppContainer {
@@ -34,8 +40,12 @@ class DefaultAppContainer(context: Context) : AppContainer {
     retrofit.create(WordApiService::class.java)
   }
 
-  override val vocabumateRepository: VocabumateRepository by lazy {
-    NetworkVocabumateRepository(retrofitService)
+  override val localWordsRepository: LocalWordsRepository by lazy {
+    OfflineWordsRepository(VocabumateDatabase.getDatabase(context).wordDao())
+  }
+
+  override val remoteWordsRepository: NetworkWordsRepository by lazy {
+    RemoteWordsRepository(retrofitService)
   }
 }
 
