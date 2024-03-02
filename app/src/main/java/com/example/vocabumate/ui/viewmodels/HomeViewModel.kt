@@ -10,23 +10,18 @@ import kotlinx.coroutines.flow.map
 import kotlinx.coroutines.flow.stateIn
 
 class HomeViewModel(
-  localWordsRepository: LocalWordsRepository
+  workManagerLocalWordsRepository: LocalWordsRepository
 ) : ViewModel() {
 
-  val homeUiState: StateFlow<HomeUiState> =
-    localWordsRepository.getAllWordsStream().map { HomeUiState(it) }
+  val allLocalWordsState: StateFlow<List<Word>> =
+    workManagerLocalWordsRepository.getAllWordsStream()
       .stateIn(
         scope = viewModelScope,
         started = SharingStarted.WhileSubscribed(TIMEOUT_MILLIS),
-        initialValue = HomeUiState()
+        initialValue = listOf()
       )
 
   companion object {
     private const val TIMEOUT_MILLIS = 5_000L
   }
 }
-
-/**
- * Ui State for HomeScreen
- */
-data class HomeUiState(val wordList: List<Word> = listOf())

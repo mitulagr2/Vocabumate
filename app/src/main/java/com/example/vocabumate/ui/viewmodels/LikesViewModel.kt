@@ -12,20 +12,17 @@ import kotlinx.coroutines.flow.stateIn
 /**
  * ViewModel to retrieve all words in the Room database.
  */
-class LikesViewModel(localWordsRepository: LocalWordsRepository) : ViewModel() {
-  val likesUiState: StateFlow<LikesUiState> =
-    localWordsRepository.getAllWordsStream().map { LikesUiState(it) }
+class LikesViewModel(workManagerLocalWordsRepository: LocalWordsRepository) : ViewModel() {
+
+  val allLocalWordsState: StateFlow<List<Word>> =
+    workManagerLocalWordsRepository.getAllWordsStream()
       .stateIn(
         scope = viewModelScope,
         started = SharingStarted.WhileSubscribed(TIMEOUT_MILLIS),
-        initialValue = LikesUiState()
+        initialValue = listOf()
       )
+
   companion object {
     private const val TIMEOUT_MILLIS = 5_000L
   }
 }
-
-/**
- * Ui State for HomeScreen
- */
-data class LikesUiState(val wordList: List<Word> = listOf())

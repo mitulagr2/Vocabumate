@@ -55,6 +55,7 @@ class FetchWorker(ctx: Context, params: WorkerParameters) : CoroutineWorker(ctx,
         require(!wordQuery.isNullOrBlank()) {
           val errorMessage =
             "invalid_word_query"
+          Log.e(TAG, wordQuery ?: "NULL_QUERY")
           Log.e(TAG, errorMessage)
           errorMessage
         }

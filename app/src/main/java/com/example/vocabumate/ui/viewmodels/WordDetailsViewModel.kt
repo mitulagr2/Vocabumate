@@ -1,5 +1,6 @@
 package com.example.vocabumate.ui.viewmodels
 
+import android.util.Log
 import androidx.compose.runtime.getValue
 import androidx.compose.runtime.mutableStateOf
 import androidx.compose.runtime.setValue
@@ -7,9 +8,10 @@ import androidx.lifecycle.SavedStateHandle
 import androidx.lifecycle.ViewModel
 import androidx.lifecycle.viewModelScope
 import androidx.work.WorkInfo
+import com.example.vocabumate.KEY_LOCAL_OUTPUT
 import com.example.vocabumate.KEY_QUERY_OUTPUT
-import com.example.vocabumate.data.local.LocalWordsRepository
 import com.example.vocabumate.data.Word
+import com.example.vocabumate.data.local.LocalWordsRepository
 import com.example.vocabumate.data.network.RemoteWordsRepository
 import com.example.vocabumate.ui.screens.WordDetailsDestination
 import kotlinx.coroutines.flow.SharingStarted
@@ -23,21 +25,37 @@ import kotlinx.serialization.json.Json
  */
 class WordDetailsViewModel(
   savedStateHandle: SavedStateHandle,
-  private val localWordsRepository: LocalWordsRepository,
+  private val workManagerLocalWordsRepository: LocalWordsRepository,
   private val workManagerRemoteWordsRepository: RemoteWordsRepository
 ) : ViewModel() {
 
   private val word: String = checkNotNull(savedStateHandle[WordDetailsDestination.wordArg])
 
-  val localWordState: StateFlow<Word> = localWordsRepository.getWordStream(word)
-    .map {
-      if (it === null) {
-        isLocal = false
-        workManagerRemoteWordsRepository.getDefinition(word)
-        Word(word, "")
-      } else {
-        isSaved = true
-        it
+  init {
+    workManagerLocalWordsRepository.getWord(word)
+    Log.d("Test4", word)
+  }
+
+  val localWordState: StateFlow<Word> = workManagerLocalWordsRepository.outputWorkInfo
+    .map { info ->
+      val outputJson = info.outputData.getString(KEY_LOCAL_OUTPUT)
+      var outputWord =
+        if (!outputJson.isNullOrEmpty()) Json.decodeFromString<Word>(outputJson) else Word("","")
+      when {
+        info.state.isFinished && outputWord.word === word -> {
+          Log.d("Test3", "outputJson")
+          isSaved = true
+          outputWord
+        }
+
+        info.state.isFinished -> {
+          Log.d("Test2", outputJson ?: "NULL")
+          isSaved = false
+          workManagerRemoteWordsRepository.getDefinition(word)
+          Word(word, "Fetching...")
+        }
+
+        else -> Word(word, "Loading...")
       }
     }
     .stateIn(
@@ -49,11 +67,11 @@ class WordDetailsViewModel(
   val remoteWordState: StateFlow<Word> =
     workManagerRemoteWordsRepository.outputWorkInfo
       .map { info ->
-        val outputJson = info.outputData.getString(KEY_QUERY_OUTPUT) ?: "{\"word\":\"\",\"meaning\":\"\"}"
-        val outputWord = Json.decodeFromString<Word>(outputJson)
+
+        val outputJson = info.outputData.getString(KEY_QUERY_OUTPUT)
         when {
-          info.state.isFinished -> {
-            outputWord
+          info.state.isFinished && !outputJson.isNullOrEmpty() -> {
+            Json.decodeFromString<Word>(outputJson)
           }
 
           info.state == WorkInfo.State.FAILED -> {
@@ -69,22 +87,20 @@ class WordDetailsViewModel(
         initialValue = Word(word, "")
       )
 
-  var isLocal: Boolean by mutableStateOf(true)
-    private set
-  var isSaved: Boolean by mutableStateOf(false)
+  var isSaved: Boolean by mutableStateOf(true)
     private set
 
   companion object {
     private const val TIMEOUT_MILLIS = 5_000L
   }
 
-  suspend fun saveWord() {
-    localWordsRepository.insertWord(if (isLocal) localWordState.value else remoteWordState.value)
+  fun saveWord() {
+    workManagerLocalWordsRepository.insertWord(remoteWordState.value)
     isSaved = true
   }
 
-  suspend fun deleteWord() {
-    localWordsRepository.deleteWord(localWordState.value)
+  fun deleteWord() {
+    workManagerLocalWordsRepository.deleteWord(localWordState.value)
     isSaved = false
   }
 }

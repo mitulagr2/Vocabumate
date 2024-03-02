@@ -1,5 +1,6 @@
 package com.example.vocabumate.ui.screens
 
+import android.util.Log
 import androidx.compose.foundation.layout.Column
 import androidx.compose.foundation.layout.fillMaxSize
 import androidx.compose.foundation.layout.padding
@@ -40,11 +41,17 @@ fun WordDetailsScreen(
 ) {
   val coroutineScope = rememberCoroutineScope()
   val wordDetailsState by (
-    if (viewModel.isLocal)
+    if (viewModel.isSaved) {
+      Log.d("screen", "local")
       viewModel.localWordState.collectAsState()
-    else
+    }
+    else {
+      Log.d("screen", "remote")
       viewModel.remoteWordState.collectAsState()
+    }
     )
+//  Log.d("screen", wordDetailsState.meaning)
+  Log.d("screen", viewModel.isSaved.toString())
 
   Scaffold(
     modifier = modifier,

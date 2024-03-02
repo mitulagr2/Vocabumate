@@ -40,7 +40,7 @@ fun LikesScreen(
   modifier: Modifier = Modifier,
   viewModel: LikesViewModel = viewModel(factory = AppViewModelProvider.Factory)
 ) {
-  val likesUiState by viewModel.likesUiState.collectAsState()
+  val localList by viewModel.allLocalWordsState.collectAsState()
 
   Scaffold(
     modifier = modifier,
@@ -49,7 +49,7 @@ fun LikesScreen(
     },
   ) { innerPadding ->
     LikesBody(
-      wordList = likesUiState.wordList,
+      wordList = localList,
       onWordClick = navigateToWordDetails,
       modifier = Modifier
         .padding(innerPadding)

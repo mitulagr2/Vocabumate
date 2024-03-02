@@ -20,18 +20,18 @@ object AppViewModelProvider {
     initializer {
       WordDetailsViewModel(
         this.createSavedStateHandle(),
-        vocabumateApplication().container.localWordsRepository,
+        vocabumateApplication().container.workManagerLocalWordsRepository,
         vocabumateApplication().container.workManagerRemoteWordsRepository
       )
     }
     // Initializer for LikesViewModel
     initializer {
-      LikesViewModel(vocabumateApplication().container.localWordsRepository)
+      LikesViewModel(vocabumateApplication().container.workManagerLocalWordsRepository)
     }
     // Initializer for HomeViewModel
     initializer {
       HomeViewModel(
-        vocabumateApplication().container.localWordsRepository
+        vocabumateApplication().container.workManagerLocalWordsRepository
       )
     }
   }

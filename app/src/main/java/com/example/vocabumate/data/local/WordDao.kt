@@ -21,7 +21,7 @@ interface WordDao {
   suspend fun delete(item: Word)
 
   @Query("SELECT * from words WHERE word = :word")
-  fun getWord(word: String): Flow<Word>
+  fun getWord(word: String): Word?
 
   @Query("SELECT * from words ORDER BY word ASC")
   fun getAllWords(): Flow<List<Word>>
