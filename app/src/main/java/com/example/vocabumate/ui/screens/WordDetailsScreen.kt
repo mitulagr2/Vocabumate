@@ -1,6 +1,5 @@
 package com.example.vocabumate.ui.screens
 
-import android.util.Log
 import androidx.compose.foundation.layout.Column
 import androidx.compose.foundation.layout.fillMaxSize
 import androidx.compose.foundation.layout.padding
@@ -21,7 +20,7 @@ import androidx.lifecycle.viewmodel.compose.viewModel
 import com.example.vocabumate.R
 import com.example.vocabumate.data.Word
 import com.example.vocabumate.ui.AppViewModelProvider
-import com.example.vocabumate.ui.components.VocabumateTopAppBar
+import com.example.vocabumate.ui.components.TopAppBar
 import com.example.vocabumate.ui.navigation.NavigationDestination
 import com.example.vocabumate.ui.viewmodels.WordDetailsViewModel
 import kotlinx.coroutines.launch
@@ -45,7 +44,7 @@ fun WordDetailsScreen(
   Scaffold(
     modifier = modifier,
     topBar = {
-      VocabumateTopAppBar(navigateTo)
+      TopAppBar(navigateTo)
     },
   ) { innerPadding ->
 

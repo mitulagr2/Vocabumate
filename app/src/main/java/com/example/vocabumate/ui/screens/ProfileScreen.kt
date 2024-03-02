@@ -8,7 +8,7 @@ import androidx.compose.material3.Text
 import androidx.compose.runtime.Composable
 import androidx.compose.ui.Modifier
 import com.example.vocabumate.R
-import com.example.vocabumate.ui.components.VocabumateTopAppBar
+import com.example.vocabumate.ui.components.TopAppBar
 import com.example.vocabumate.ui.navigation.NavigationDestination
 
 object ProfileDestination : NavigationDestination {
@@ -24,7 +24,7 @@ fun ProfileScreen(
   Scaffold(
     modifier = modifier,
     topBar = {
-      VocabumateTopAppBar(navigateTo)
+      TopAppBar(navigateTo)
     },
   ) { innerPadding ->
     ProfileBody(

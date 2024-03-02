@@ -24,7 +24,7 @@ import androidx.lifecycle.viewmodel.compose.viewModel
 import com.example.vocabumate.R
 import com.example.vocabumate.data.Word
 import com.example.vocabumate.ui.AppViewModelProvider
-import com.example.vocabumate.ui.components.VocabumateTopAppBar
+import com.example.vocabumate.ui.components.TopAppBar
 import com.example.vocabumate.ui.navigation.NavigationDestination
 import com.example.vocabumate.ui.viewmodels.LikesViewModel
 
@@ -45,7 +45,7 @@ fun LikesScreen(
   Scaffold(
     modifier = modifier,
     topBar = {
-      VocabumateTopAppBar(navigateTo)
+      TopAppBar(navigateTo)
     },
   ) { innerPadding ->
     LikesBody(

@@ -65,7 +65,7 @@ class WorkManagerWordsRepository(context: Context): WordsRepository {
     val fetchBuilder = OneTimeWorkRequestBuilder<FetchWorker>()
       .addTag(TAG_OUTPUT)
       .setConstraints(remoteConstraints)
-      .setInputData(createInputDataForWorkRequest(word))
+      .setInputData(createInputDataForWorkRequest(word, "GET"))
 
     continuation = continuation.then(fetchBuilder.build())
 
@@ -101,7 +101,7 @@ class WorkManagerWordsRepository(context: Context): WordsRepository {
     continuation.enqueue()
   }
 
-  private fun createInputDataForWorkRequest(payload: String, action: String = ""): Data {
+  private fun createInputDataForWorkRequest(payload: String, action: String): Data {
     val builder = Data.Builder()
     builder.putString(KEY_PAYLOAD, payload).putString(KEY_ACTION, action)
     return builder.build()
