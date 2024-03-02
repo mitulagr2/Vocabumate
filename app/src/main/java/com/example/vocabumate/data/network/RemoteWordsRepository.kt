@@ -1,7 +1,9 @@
 package com.example.vocabumate.data.network
 
-class RemoteWordsRepository(
-  private val wordApiService: WordApiService
-) : NetworkWordsRepository {
-  override suspend fun getDefinition(word: String): String = wordApiService.getDefinition(word)
+import androidx.work.WorkInfo
+import kotlinx.coroutines.flow.Flow
+
+interface RemoteWordsRepository {
+  val outputWorkInfo: Flow<WorkInfo>
+  fun getWord(word: String)
 }

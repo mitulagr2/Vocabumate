@@ -11,13 +11,13 @@ import com.example.vocabumate.R
 import com.example.vocabumate.ui.components.TopAppBar
 import com.example.vocabumate.ui.navigation.NavigationDestination
 
-object DiscoverDestination : NavigationDestination {
-  override val route = "discover"
+object LoginDestination : NavigationDestination {
+  override val route = "login"
   override val titleRes = R.string.app_name
 }
 
 @Composable
-fun DiscoverScreen(
+fun LoginScreen(
   navigateTo: (String) -> Unit,
   modifier: Modifier = Modifier
 ) {
@@ -27,7 +27,7 @@ fun DiscoverScreen(
       TopAppBar(navigateTo)
     },
   ) { innerPadding ->
-    DiscoverBody(
+    LoginBody(
       modifier = Modifier
         .padding(innerPadding)
         .fillMaxSize()
@@ -36,10 +36,10 @@ fun DiscoverScreen(
 }
 
 @Composable
-private fun DiscoverBody(
+private fun LoginBody(
   modifier: Modifier = Modifier
 ) {
   Column(modifier = modifier) {
-    Text(text = "DiscoverScreen")
+    Text(text = "LoginScreen")
   }
 }

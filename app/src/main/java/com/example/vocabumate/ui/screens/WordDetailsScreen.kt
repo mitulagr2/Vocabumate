@@ -18,9 +18,9 @@ import androidx.compose.ui.Modifier
 import androidx.compose.ui.graphics.vector.ImageVector
 import androidx.lifecycle.viewmodel.compose.viewModel
 import com.example.vocabumate.R
-import com.example.vocabumate.data.local.Word
+import com.example.vocabumate.data.Word
 import com.example.vocabumate.ui.AppViewModelProvider
-import com.example.vocabumate.ui.components.VocabumateTopAppBar
+import com.example.vocabumate.ui.components.TopAppBar
 import com.example.vocabumate.ui.navigation.NavigationDestination
 import com.example.vocabumate.ui.viewmodels.WordDetailsViewModel
 import kotlinx.coroutines.launch
@@ -39,20 +39,21 @@ fun WordDetailsScreen(
   viewModel: WordDetailsViewModel = viewModel(factory = AppViewModelProvider.Factory)
 ) {
   val coroutineScope = rememberCoroutineScope()
-  val wordDetailsUiState by viewModel.wordDetailsUiState.collectAsState()
+  val wordDetailsUiState by viewModel.wordDetailsState.collectAsState()
 
   Scaffold(
     modifier = modifier,
     topBar = {
-      VocabumateTopAppBar(navigateTo)
+      TopAppBar(navigateTo)
     },
   ) { innerPadding ->
+
     WordDetailsBody(
-      wordDetails = if (wordDetailsUiState.isLocal) wordDetailsUiState.wordDetails else viewModel.wordUiState.wordDetails,
-      iconVector = if (wordDetailsUiState.isLocal) Icons.Filled.Favorite else Icons.Filled.FavoriteBorder,
+      info = wordDetailsUiState,
+      iconVector = if (viewModel.isSaved) Icons.Filled.Favorite else Icons.Filled.FavoriteBorder,
       btnAction = {
         coroutineScope.launch {
-          if (wordDetailsUiState.isLocal) viewModel.deleteWord() else viewModel.saveWord()
+          if (viewModel.isSaved) viewModel.deleteWord() else viewModel.saveWord()
         }
       },
       modifier = Modifier
@@ -64,7 +65,7 @@ fun WordDetailsScreen(
 
 @Composable
 private fun WordDetailsBody(
-  wordDetails: Word,
+  info: Word,
   iconVector: ImageVector,
   btnAction: () -> Unit,
   modifier: Modifier = Modifier
@@ -73,9 +74,9 @@ private fun WordDetailsBody(
     IconButton(onClick = btnAction) {
       Icon(iconVector, contentDescription = "Like")
     }
-    Text(text = wordDetails.word)
+    Text(text = info.word)
     Text(
-      text = wordDetails.meaning
+      text = info.meaning
     )
   }
 }

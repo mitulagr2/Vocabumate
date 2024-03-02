@@ -1,3 +1,5 @@
 <resources>
     <string name="app_name">Vocabumate</string>
+    <string name="word_input_placeholder">Enter word here</string>
+    <string name="empty_list_local_message">Oops! No words to show.</string>
 </resources>

@@ -1,11 +1,15 @@
 package com.example.vocabumate.data.local
 
+import androidx.work.WorkInfo
+import com.example.vocabumate.data.Word
 import kotlinx.coroutines.flow.Flow
 
 /**
  * Repository that provides insert, update, delete, and retrieve of [Word] from a given data source.
  */
 interface LocalWordsRepository {
+  val outputWorkInfo: Flow<WorkInfo>
+
   /**
    * Retrieve all the items from the given data source.
    */
@@ -14,20 +18,15 @@ interface LocalWordsRepository {
   /**
    * Retrieve an item from the given data source that matches with the [word].
    */
-  fun getWordStream(word: String): Flow<Word?>
+  fun getWord(word: String)
 
   /**
    * Insert item in the data source
    */
-  suspend fun insertWord(word: Word)
+  fun insertWord(word: Word)
 
   /**
    * Delete item from the data source
    */
-  suspend fun deleteWord(word: Word)
-
-  /**
-   * Update item in the data source
-   */
-  suspend fun updateWord(word: Word)
+  fun deleteWord(word: Word)
 }

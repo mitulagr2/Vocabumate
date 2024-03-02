@@ -9,12 +9,16 @@ import androidx.navigation.compose.composable
 import androidx.navigation.navArgument
 import com.example.vocabumate.ui.screens.AnalyticsDestination
 import com.example.vocabumate.ui.screens.AnalyticsScreen
+import com.example.vocabumate.ui.screens.DailyDestination
+import com.example.vocabumate.ui.screens.DailyScreen
 import com.example.vocabumate.ui.screens.DiscoverDestination
 import com.example.vocabumate.ui.screens.DiscoverScreen
 import com.example.vocabumate.ui.screens.HomeDestination
 import com.example.vocabumate.ui.screens.HomeScreen
 import com.example.vocabumate.ui.screens.LikesDestination
 import com.example.vocabumate.ui.screens.LikesScreen
+import com.example.vocabumate.ui.screens.LoginDestination
+import com.example.vocabumate.ui.screens.LoginScreen
 import com.example.vocabumate.ui.screens.ProfileDestination
 import com.example.vocabumate.ui.screens.ProfileScreen
 import com.example.vocabumate.ui.screens.WordDetailsDestination
@@ -67,6 +71,16 @@ fun VocabumateNavHost(
       })
     ) {
       WordDetailsScreen(
+        navigateTo = navController::navigate,
+      )
+    }
+    composable(route = DailyDestination.route) {
+      DailyScreen(
+        navigateTo = navController::navigate,
+      )
+    }
+    composable(route = LoginDestination.route) {
+      LoginScreen(
         navigateTo = navController::navigate,
       )
     }
