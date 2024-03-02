@@ -5,5 +5,5 @@ import kotlinx.coroutines.flow.Flow
 
 interface RemoteWordsRepository {
   val outputWorkInfo: Flow<WorkInfo>
-  fun getDefinition(word: String)
+  fun getWord(word: String)
 }

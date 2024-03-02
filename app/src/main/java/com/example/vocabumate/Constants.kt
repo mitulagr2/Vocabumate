@@ -13,13 +13,12 @@ const val CHANNEL_ID = "VERBOSE_NOTIFICATION"
 const val NOTIFICATION_ID = 1
 
 // The name of the fetch word work
-const val FETCH_WORD_WORK_NAME = "fetch_word_work"
+const val GET_WORD_WORK_NAME = "get_word_work"
+const val MODIFY_WORD_WORK_NAME = "modify_word_work"
 
 // Other keys
-const val KEY_WORD_QUERY = "KEY_WORD_QUERY"
-const val TAG_REMOTE_OUTPUT = "REMOTE_OUTPUT"
-const val KEY_QUERY_OUTPUT = "KEY_QUERY_OUTPUT"
-const val KEY_LOCAL_OUTPUT = "KEY_LOCAL_OUTPUT"
-const val TAG_LOCAL_OUTPUT = "LOCAL_OUTPUT"
-const val KEY_ACTION_TYPE = "KEY_ACTION_TYPE"
-const val KEY_ACTION_PAYLOAD = "KEY_ACTION_PAYLOAD"
+const val TAG_OUTPUT = "OUTPUT"
+const val KEY_PAYLOAD = "KEY_ACTION_PAYLOAD"
+const val KEY_ACTION = "KEY_ACTION_TYPE"
+const val KEY_OUTPUT_DATA = "KEY_OUTPUT_DATA"
+const val KEY_OUTPUT_TYPE = "KEY_OUTPUT_TYPE"

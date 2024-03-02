@@ -5,10 +5,10 @@ import android.util.Log
 import androidx.work.CoroutineWorker
 import androidx.work.WorkerParameters
 import androidx.work.workDataOf
-import com.example.vocabumate.KEY_ACTION_PAYLOAD
-import com.example.vocabumate.KEY_ACTION_TYPE
-import com.example.vocabumate.KEY_LOCAL_OUTPUT
-import com.example.vocabumate.KEY_QUERY_OUTPUT
+import com.example.vocabumate.KEY_ACTION
+import com.example.vocabumate.KEY_OUTPUT_DATA
+import com.example.vocabumate.KEY_OUTPUT_TYPE
+import com.example.vocabumate.KEY_PAYLOAD
 import com.example.vocabumate.data.Word
 import com.example.vocabumate.data.local.VocabumateDatabase
 import com.example.vocabumate.data.local.WordDao
@@ -44,35 +44,35 @@ class RoomWorker(ctx: Context, params: WorkerParameters) : CoroutineWorker(ctx, 
   }
 
   override suspend fun doWork(): Result {
-    val roomAction = inputData.getString(KEY_ACTION_TYPE)
-    val payload = inputData.getString(KEY_ACTION_PAYLOAD)
+    val payload = inputData.getString(KEY_PAYLOAD) ?: ""
+    val action = inputData.getString(KEY_ACTION) ?: ""
 
     makeStatusNotification(
-      "fetching_word",
+      "accessing_room",
       applicationContext
     )
 
     return withContext(Dispatchers.IO) {
       return@withContext try {
-        require(!roomAction.isNullOrBlank() && !payload.isNullOrBlank()) {
-          val errorMessage =
-            "invalid_action_or_payload"
-          Log.e(TAG, errorMessage)
-          errorMessage
-        }
 
-        val output = handleRoomAction(roomAction, payload)
-        val outputJson = if (output === null) "" else Json.encodeToString(output)
-        Log.d("Test10", outputJson)
-        val outputData = workDataOf(KEY_LOCAL_OUTPUT to outputJson)
-        Result.success(outputData)
+        val output = handleRoomAction(action, payload)
+
+        if (output !== null) {
+          val outputData =
+            workDataOf(KEY_OUTPUT_DATA to Json.encodeToString(output), KEY_OUTPUT_TYPE to "LOCAL")
+          Result.failure(outputData)
+        } else {
+          // Continue to fetch worker
+          Result.success()
+        }
       } catch (throwable: Throwable) {
         Log.e(
           TAG,
-          "error_fetching_word",
+          "error_accessing_room",
           throwable
         )
-        Result.failure()
+        // Continue to fetch worker
+        Result.success()
       }
     }
   }

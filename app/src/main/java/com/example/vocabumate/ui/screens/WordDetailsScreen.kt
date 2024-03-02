@@ -40,18 +40,7 @@ fun WordDetailsScreen(
   viewModel: WordDetailsViewModel = viewModel(factory = AppViewModelProvider.Factory)
 ) {
   val coroutineScope = rememberCoroutineScope()
-  val wordDetailsState by (
-    if (viewModel.isSaved) {
-      Log.d("screen", "local")
-      viewModel.localWordState.collectAsState()
-    }
-    else {
-      Log.d("screen", "remote")
-      viewModel.remoteWordState.collectAsState()
-    }
-    )
-//  Log.d("screen", wordDetailsState.meaning)
-  Log.d("screen", viewModel.isSaved.toString())
+  val wordDetailsUiState by viewModel.wordDetailsState.collectAsState()
 
   Scaffold(
     modifier = modifier,
@@ -59,8 +48,9 @@ fun WordDetailsScreen(
       VocabumateTopAppBar(navigateTo)
     },
   ) { innerPadding ->
+
     WordDetailsBody(
-      wordDetails = wordDetailsState,
+      info = wordDetailsUiState,
       iconVector = if (viewModel.isSaved) Icons.Filled.Favorite else Icons.Filled.FavoriteBorder,
       btnAction = {
         coroutineScope.launch {
@@ -76,7 +66,7 @@ fun WordDetailsScreen(
 
 @Composable
 private fun WordDetailsBody(
-  wordDetails: Word,
+  info: Word,
   iconVector: ImageVector,
   btnAction: () -> Unit,
   modifier: Modifier = Modifier
@@ -85,9 +75,9 @@ private fun WordDetailsBody(
     IconButton(onClick = btnAction) {
       Icon(iconVector, contentDescription = "Like")
     }
-    Text(text = wordDetails.word)
+    Text(text = info.word)
     Text(
-      text = wordDetails.meaning
+      text = info.meaning
     )
   }
 }
