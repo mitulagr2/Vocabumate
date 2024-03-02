@@ -7,5 +7,5 @@ interface WordApiService {
   @GET("define")
   suspend fun getDefinition(
     @Query("word") word: String
-  ): String
+  ): WordRemote
 }
