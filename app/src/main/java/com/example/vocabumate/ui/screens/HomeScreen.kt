@@ -14,7 +14,6 @@ import com.example.vocabumate.ui.components.InputBottomBar
 import com.example.vocabumate.ui.components.VocabumateTopAppBar
 import com.example.vocabumate.ui.navigation.NavigationDestination
 import com.example.vocabumate.ui.viewmodels.HomeViewModel
-import com.example.vocabumate.ui.viewmodels.WordUiState
 
 object HomeDestination : NavigationDestination {
   override val route = "home"
