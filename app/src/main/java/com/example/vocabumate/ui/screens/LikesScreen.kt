@@ -18,13 +18,14 @@ import androidx.compose.runtime.collectAsState
 import androidx.compose.runtime.getValue
 import androidx.compose.ui.Alignment
 import androidx.compose.ui.Modifier
+import androidx.compose.ui.res.stringResource
 import androidx.compose.ui.text.style.TextAlign
 import androidx.compose.ui.unit.dp
 import androidx.lifecycle.viewmodel.compose.viewModel
 import com.example.vocabumate.R
-import com.example.vocabumate.data.local.Word
+import com.example.vocabumate.data.Word
 import com.example.vocabumate.ui.AppViewModelProvider
-import com.example.vocabumate.ui.components.VocabumateTopAppBar
+import com.example.vocabumate.ui.components.TopAppBar
 import com.example.vocabumate.ui.navigation.NavigationDestination
 import com.example.vocabumate.ui.viewmodels.LikesViewModel
 
@@ -40,16 +41,16 @@ fun LikesScreen(
   modifier: Modifier = Modifier,
   viewModel: LikesViewModel = viewModel(factory = AppViewModelProvider.Factory)
 ) {
-  val likesUiState by viewModel.likesUiState.collectAsState()
+  val localList by viewModel.allLocalWordsState.collectAsState()
 
   Scaffold(
     modifier = modifier,
     topBar = {
-      VocabumateTopAppBar(navigateTo)
+      TopAppBar(navigateTo)
     },
   ) { innerPadding ->
     LikesBody(
-      wordList = likesUiState.wordList,
+      wordList = localList,
       onWordClick = navigateToWordDetails,
       modifier = Modifier
         .padding(innerPadding)
@@ -70,7 +71,7 @@ private fun LikesBody(
   ) {
     if (wordList.isEmpty()) {
       Text(
-        text = "Oops! No words to show.",
+        text = stringResource(R.string.empty_list_local_message),
         textAlign = TextAlign.Center,
       )
     } else {

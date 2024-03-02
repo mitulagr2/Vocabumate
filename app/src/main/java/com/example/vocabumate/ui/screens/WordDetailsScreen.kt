@@ -18,9 +18,9 @@ import androidx.compose.ui.Modifier
 import androidx.compose.ui.graphics.vector.ImageVector
 import androidx.lifecycle.viewmodel.compose.viewModel
 import com.example.vocabumate.R
-import com.example.vocabumate.data.local.Word
+import com.example.vocabumate.data.Word
 import com.example.vocabumate.ui.AppViewModelProvider
-import com.example.vocabumate.ui.components.VocabumateTopAppBar
+import com.example.vocabumate.ui.components.TopAppBar
 import com.example.vocabumate.ui.navigation.NavigationDestination
 import com.example.vocabumate.ui.viewmodels.WordDetailsViewModel
 import kotlinx.coroutines.launch
@@ -39,21 +39,17 @@ fun WordDetailsScreen(
   viewModel: WordDetailsViewModel = viewModel(factory = AppViewModelProvider.Factory)
 ) {
   val coroutineScope = rememberCoroutineScope()
-  val wordDetailsState by (
-    if (viewModel.isLocal)
-      viewModel.localWordState.collectAsState()
-    else
-      viewModel.remoteWordState.collectAsState()
-    )
+  val wordDetailsUiState by viewModel.wordDetailsState.collectAsState()
 
   Scaffold(
     modifier = modifier,
     topBar = {
-      VocabumateTopAppBar(navigateTo)
+      TopAppBar(navigateTo)
     },
   ) { innerPadding ->
+
     WordDetailsBody(
-      wordDetails = wordDetailsState,
+      info = wordDetailsUiState,
       iconVector = if (viewModel.isSaved) Icons.Filled.Favorite else Icons.Filled.FavoriteBorder,
       btnAction = {
         coroutineScope.launch {
@@ -69,7 +65,7 @@ fun WordDetailsScreen(
 
 @Composable
 private fun WordDetailsBody(
-  wordDetails: Word,
+  info: Word,
   iconVector: ImageVector,
   btnAction: () -> Unit,
   modifier: Modifier = Modifier
@@ -78,9 +74,9 @@ private fun WordDetailsBody(
     IconButton(onClick = btnAction) {
       Icon(iconVector, contentDescription = "Like")
     }
-    Text(text = wordDetails.word)
+    Text(text = info.word)
     Text(
-      text = wordDetails.meaning
+      text = info.meaning
     )
   }
 }

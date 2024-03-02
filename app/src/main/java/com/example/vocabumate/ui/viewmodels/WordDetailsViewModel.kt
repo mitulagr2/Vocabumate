@@ -7,68 +7,62 @@ import androidx.lifecycle.SavedStateHandle
 import androidx.lifecycle.ViewModel
 import androidx.lifecycle.viewModelScope
 import androidx.work.WorkInfo
-import com.example.vocabumate.KEY_QUERY_OUTPUT
-import com.example.vocabumate.data.local.LocalWordsRepository
-import com.example.vocabumate.data.local.Word
-import com.example.vocabumate.data.network.RemoteWordsRepository
+import com.example.vocabumate.FETCH_ERROR_MESSAGE
+import com.example.vocabumate.KEY_OUTPUT_DATA
+import com.example.vocabumate.KEY_OUTPUT_TYPE
+import com.example.vocabumate.WORD_LOADING_MESSAGE
+import com.example.vocabumate.data.Word
+import com.example.vocabumate.data.WordsRepository
 import com.example.vocabumate.ui.screens.WordDetailsDestination
 import kotlinx.coroutines.flow.SharingStarted
 import kotlinx.coroutines.flow.StateFlow
 import kotlinx.coroutines.flow.map
 import kotlinx.coroutines.flow.stateIn
+import kotlinx.serialization.json.Json
 
 /**
- * ViewModel to retrieve, update and delete a word from the [LocalWordsRepository]'s data source.
+ * ViewModel to retrieve, update and delete a word from the [WordsRepository]'s data source.
  */
 class WordDetailsViewModel(
   savedStateHandle: SavedStateHandle,
-  private val localWordsRepository: LocalWordsRepository,
-  private val workManagerRemoteWordsRepository: RemoteWordsRepository
+  private val workManagerWordsRepository: WordsRepository
 ) : ViewModel() {
 
   private val word: String = checkNotNull(savedStateHandle[WordDetailsDestination.wordArg])
 
-  val localWordState: StateFlow<Word> = localWordsRepository.getWordStream(word)
-    .map {
-      if (it === null) {
-        isLocal = false
-        workManagerRemoteWordsRepository.getDefinition(word)
-        Word(word, "")
-      } else {
-        isSaved = true
-        it
+  init {
+    workManagerWordsRepository.getWord(word)
+  }
+
+  val wordDetailsState: StateFlow<Word> = workManagerWordsRepository.outputWorkInfo
+    .map { info ->
+      val outputData = info.outputData.getString(KEY_OUTPUT_DATA)
+      val outputType = info.outputData.getString(KEY_OUTPUT_TYPE)
+      isSaved = false
+
+      when {
+        (info.state == WorkInfo.State.FAILED) && (outputType.equals("LOCAL")) -> {
+          isSaved = true
+          Json.decodeFromString<Word>(outputData!!)
+        }
+
+        (info.state == WorkInfo.State.SUCCEEDED) && (outputType.equals("REMOTE")) -> {
+          Json.decodeFromString<Word>(outputData!!)
+        }
+
+        info.state == WorkInfo.State.FAILED -> {
+          Word(word, FETCH_ERROR_MESSAGE)
+        }
+
+        else -> Word(word, WORD_LOADING_MESSAGE)
       }
     }
     .stateIn(
       scope = viewModelScope,
       started = SharingStarted.WhileSubscribed(TIMEOUT_MILLIS),
-      initialValue = Word(word, "Loading...")
+      initialValue = Word(word, WORD_LOADING_MESSAGE)
     )
 
-  val remoteWordState: StateFlow<Word> =
-    workManagerRemoteWordsRepository.outputWorkInfo
-      .map { info ->
-        val outputWord = info.outputData.getString(KEY_QUERY_OUTPUT)
-        when {
-          info.state.isFinished && !outputWord.isNullOrEmpty() -> {
-            Word(word, outputWord)
-          }
-
-          info.state == WorkInfo.State.FAILED -> {
-            Word(word, "Error fetching the word.")
-          }
-
-          else -> Word(word, "Fetching...")
-        }
-      }
-      .stateIn(
-        scope = viewModelScope,
-        started = SharingStarted.WhileSubscribed(TIMEOUT_MILLIS),
-        initialValue = Word(word, "")
-      )
-
-  var isLocal: Boolean by mutableStateOf(true)
-    private set
   var isSaved: Boolean by mutableStateOf(false)
     private set
 
@@ -76,13 +70,13 @@ class WordDetailsViewModel(
     private const val TIMEOUT_MILLIS = 5_000L
   }
 
-  suspend fun saveWord() {
-    localWordsRepository.insertWord(if (isLocal) localWordState.value else remoteWordState.value)
+  fun saveWord() {
     isSaved = true
+    workManagerWordsRepository.insertWord(wordDetailsState.value)
   }
 
-  suspend fun deleteWord() {
-    localWordsRepository.deleteWord(localWordState.value)
+  fun deleteWord() {
     isSaved = false
+    workManagerWordsRepository.deleteWord(wordDetailsState.value)
   }
 }

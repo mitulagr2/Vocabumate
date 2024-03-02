@@ -5,10 +5,9 @@ import android.util.Log
 import androidx.work.CoroutineWorker
 import androidx.work.WorkerParameters
 import androidx.work.workDataOf
-import com.example.vocabumate.KEY_API_SERVICE
-import com.example.vocabumate.KEY_QUERY_OUTPUT
-import com.example.vocabumate.KEY_WORD_QUERY
-import com.example.vocabumate.R
+import com.example.vocabumate.KEY_OUTPUT_DATA
+import com.example.vocabumate.KEY_OUTPUT_TYPE
+import com.example.vocabumate.KEY_PAYLOAD
 import com.example.vocabumate.data.network.WordApiService
 import kotlinx.coroutines.Dispatchers
 import kotlinx.coroutines.withContext
@@ -32,7 +31,6 @@ class FetchWorker(ctx: Context, params: WorkerParameters) : CoroutineWorker(ctx,
 
   private val retrofit = Retrofit.Builder()
     .addConverterFactory(ScalarsConverterFactory.create())
-//    .addConverterFactory(Json.asConverterFactory("application/json".toMediaType()))
     .baseUrl(baseUrl)
     .client(okHttpClient)
     .build()
@@ -42,7 +40,7 @@ class FetchWorker(ctx: Context, params: WorkerParameters) : CoroutineWorker(ctx,
   }
 
   override suspend fun doWork(): Result {
-    val wordQuery = inputData.getString(KEY_WORD_QUERY)
+    val payload = inputData.getString(KEY_PAYLOAD) ?: ""
 
     makeStatusNotification(
       "fetching_word",
@@ -51,16 +49,11 @@ class FetchWorker(ctx: Context, params: WorkerParameters) : CoroutineWorker(ctx,
 
     return withContext(Dispatchers.IO) {
       return@withContext try {
-        require(!wordQuery.isNullOrBlank()) {
-          val errorMessage =
-            "invalid_word_query"
-          Log.e(TAG, errorMessage)
-          errorMessage
-        }
 
-        val output = retrofitService.getDefinition(wordQuery)
-        val outputData = workDataOf(KEY_QUERY_OUTPUT to output)
+        val output = retrofitService.getDefinition(payload)
+        val outputData = workDataOf(KEY_OUTPUT_DATA to output, KEY_OUTPUT_TYPE to "REMOTE")
         Result.success(outputData)
+
       } catch (throwable: Throwable) {
         Log.e(
           TAG,
