@@ -18,6 +18,7 @@ import androidx.compose.runtime.collectAsState
 import androidx.compose.runtime.getValue
 import androidx.compose.ui.Alignment
 import androidx.compose.ui.Modifier
+import androidx.compose.ui.res.stringResource
 import androidx.compose.ui.text.style.TextAlign
 import androidx.compose.ui.unit.dp
 import androidx.lifecycle.viewmodel.compose.viewModel
@@ -70,7 +71,7 @@ private fun LikesBody(
   ) {
     if (wordList.isEmpty()) {
       Text(
-        text = "Oops! No words to show.",
+        text = stringResource(R.string.empty_list_local_message),
         textAlign = TextAlign.Center,
       )
     } else {

@@ -1,7 +1,6 @@
 package com.example.vocabumate.data
 
 import android.content.Context
-import android.util.Log
 import androidx.lifecycle.asFlow
 import androidx.work.Constraints
 import androidx.work.Data
@@ -26,9 +25,9 @@ import kotlinx.coroutines.flow.mapNotNull
 import kotlinx.serialization.encodeToString
 import kotlinx.serialization.json.Json
 
-interface WordsRepository: LocalWordsRepository, RemoteWordsRepository
+interface WordsRepository : LocalWordsRepository, RemoteWordsRepository
 
-class WorkManagerWordsRepository(context: Context): WordsRepository {
+class WorkManagerWordsRepository(context: Context) : WordsRepository {
 
   private val workManager = WorkManager.getInstance(context)
   private val wordDao: WordDao = VocabumateDatabase.getDatabase(context).wordDao()
@@ -38,7 +37,8 @@ class WorkManagerWordsRepository(context: Context): WordsRepository {
   override val outputWorkInfo: Flow<WorkInfo> =
     workManager.getWorkInfosByTagLiveData(TAG_OUTPUT).asFlow().mapNotNull {
       if (it.isNotEmpty()) {
-        val roomInfo = it.find { it -> it.tags.contains("com.example.vocabumate.workers.RoomWorker") }
+        val roomInfo =
+          it.find { it -> it.tags.contains("com.example.vocabumate.workers.RoomWorker") }
         when (roomInfo!!.state) {
           WorkInfo.State.FAILED -> roomInfo
           else -> it.find { it -> it.tags.contains("com.example.vocabumate.workers.FetchWorker") }

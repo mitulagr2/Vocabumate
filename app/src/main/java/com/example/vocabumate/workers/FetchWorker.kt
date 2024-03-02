@@ -31,7 +31,6 @@ class FetchWorker(ctx: Context, params: WorkerParameters) : CoroutineWorker(ctx,
 
   private val retrofit = Retrofit.Builder()
     .addConverterFactory(ScalarsConverterFactory.create())
-//    .addConverterFactory(Json.asConverterFactory("application/json".toMediaType()))
     .baseUrl(baseUrl)
     .client(okHttpClient)
     .build()

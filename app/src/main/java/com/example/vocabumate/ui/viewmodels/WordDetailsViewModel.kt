@@ -1,6 +1,5 @@
 package com.example.vocabumate.ui.viewmodels
 
-import android.util.Log
 import androidx.compose.runtime.getValue
 import androidx.compose.runtime.mutableStateOf
 import androidx.compose.runtime.setValue
@@ -8,8 +7,10 @@ import androidx.lifecycle.SavedStateHandle
 import androidx.lifecycle.ViewModel
 import androidx.lifecycle.viewModelScope
 import androidx.work.WorkInfo
+import com.example.vocabumate.FETCH_ERROR_MESSAGE
 import com.example.vocabumate.KEY_OUTPUT_DATA
 import com.example.vocabumate.KEY_OUTPUT_TYPE
+import com.example.vocabumate.WORD_LOADING_MESSAGE
 import com.example.vocabumate.data.Word
 import com.example.vocabumate.data.WordsRepository
 import com.example.vocabumate.ui.screens.WordDetailsDestination
@@ -30,7 +31,6 @@ class WordDetailsViewModel(
   private val word: String = checkNotNull(savedStateHandle[WordDetailsDestination.wordArg])
 
   init {
-    Log.d("init", word)
     workManagerWordsRepository.getWord(word)
   }
 
@@ -51,16 +51,16 @@ class WordDetailsViewModel(
         }
 
         info.state == WorkInfo.State.FAILED -> {
-          Word(word, "Error retrieving word. Please try again later.")
+          Word(word, FETCH_ERROR_MESSAGE)
         }
 
-        else -> Word(word, "Loading...")
+        else -> Word(word, WORD_LOADING_MESSAGE)
       }
     }
     .stateIn(
       scope = viewModelScope,
       started = SharingStarted.WhileSubscribed(TIMEOUT_MILLIS),
-      initialValue = Word(word, "Loading...")
+      initialValue = Word(word, WORD_LOADING_MESSAGE)
     )
 
   var isSaved: Boolean by mutableStateOf(false)

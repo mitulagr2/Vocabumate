@@ -17,7 +17,9 @@ import androidx.compose.runtime.setValue
 import androidx.compose.ui.Modifier
 import androidx.compose.ui.draw.shadow
 import androidx.compose.ui.graphics.Color
+import androidx.compose.ui.res.stringResource
 import androidx.compose.ui.unit.dp
+import com.example.vocabumate.R
 
 @Composable
 fun InputBottomBar(
@@ -48,7 +50,7 @@ fun InputBottomBar(
         disabledIndicatorColor = Color.Transparent
       ),
       onValueChange = { query = it },
-      label = { Text("Enter word here") },
+      placeholder = { Text(stringResource(R.string.word_input_placeholder)) },
       //      keyboardOptions = KeyboardOptions.Default.copy(
       //        imeAction = ImeAction.Done
       //      ),
