@@ -48,11 +48,11 @@ fun WordDetailsScreen(
     },
   ) { innerPadding ->
     WordDetailsBody(
-      wordDetails = if (wordDetailsUiState.isLocal) wordDetailsUiState.wordDetails else viewModel.wordUiState.wordDetails,
-      iconVector = if (wordDetailsUiState.isLocal) Icons.Filled.Favorite else Icons.Filled.FavoriteBorder,
+      wordDetails = wordDetailsUiState.wordDetails,
+      iconVector = if (wordDetailsUiState.isSaved) Icons.Filled.Favorite else Icons.Filled.FavoriteBorder,
       btnAction = {
         coroutineScope.launch {
-          if (wordDetailsUiState.isLocal) viewModel.deleteWord() else viewModel.saveWord()
+          if (wordDetailsUiState.isSaved) viewModel.deleteWord() else viewModel.saveWord()
         }
       },
       modifier = Modifier

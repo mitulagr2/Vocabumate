@@ -1,22 +1,19 @@
 package com.example.vocabumate.ui.viewmodels
 
-import android.util.Log
-import androidx.compose.runtime.getValue
-import androidx.compose.runtime.mutableStateOf
-import androidx.compose.runtime.setValue
 import androidx.lifecycle.SavedStateHandle
 import androidx.lifecycle.ViewModel
 import androidx.lifecycle.viewModelScope
+import androidx.work.WorkInfo
+import com.example.vocabumate.KEY_WORD_QUERY
 import com.example.vocabumate.data.local.LocalWordsRepository
 import com.example.vocabumate.data.local.Word
-import com.example.vocabumate.data.network.NetworkWordsRepository
+import com.example.vocabumate.data.network.RemoteWordsRepository
 import com.example.vocabumate.ui.screens.WordDetailsDestination
+import kotlinx.coroutines.flow.Flow
 import kotlinx.coroutines.flow.SharingStarted
 import kotlinx.coroutines.flow.StateFlow
 import kotlinx.coroutines.flow.map
 import kotlinx.coroutines.flow.stateIn
-import kotlinx.coroutines.launch
-import java.io.IOException
 
 /**
  * ViewModel to retrieve, update and delete a word from the [LocalWordsRepository]'s data source.
@@ -24,48 +21,55 @@ import java.io.IOException
 class WordDetailsViewModel(
   savedStateHandle: SavedStateHandle,
   private val localWordsRepository: LocalWordsRepository,
-  private val remoteWordsRepository: NetworkWordsRepository
+  private val workManagerRemoteWordsRepository: RemoteWordsRepository
 ) : ViewModel() {
 
   private val word: String = checkNotNull(savedStateHandle[WordDetailsDestination.wordArg])
 
-  var wordUiState: WordUiState by mutableStateOf(WordUiState())
-    private set
+  private val localWordUiFlow: Flow<WordDetailsUiState> = localWordsRepository.getWordStream(word)
+    .map {
+      if (it === null) {
+        workManagerRemoteWordsRepository.getDefinition(word)
+        WordDetailsUiState()
+      } else {
+        isSaved = true
+        WordDetailsUiState(isSaved = true, wordDetails = it)
+      }
+    }
 
-  val wordDetailsUiState: StateFlow<WordUiState> =
-    localWordsRepository.getWordStream(word)
-      .map {
-        if (it === null) {
-          getDefinition(word)
-          WordUiState()
-        } else {
-          WordUiState(isLocal = true, wordDetails = it)
+  private val remoteWordUiFlow: Flow<WordDetailsUiState> =
+    workManagerRemoteWordsRepository.outputWorkInfo
+      .map { info ->
+        val outputWord = info.outputData.getString(KEY_WORD_QUERY)
+        when {
+          info.state.isFinished && !outputWord.isNullOrEmpty() -> {
+            WordDetailsUiState(Word(word, outputWord))
+          }
+
+          info.state == WorkInfo.State.CANCELLED -> {
+            WordDetailsUiState()
+          }
+
+          else -> WordDetailsUiState()
         }
-      }.stateIn(
+      }
+
+  private var isSaved = false
+
+  val wordDetailsUiState: StateFlow<WordDetailsUiState> =
+    (if (isSaved) localWordUiFlow else remoteWordUiFlow)
+      .stateIn(
         scope = viewModelScope,
         started = SharingStarted.WhileSubscribed(TIMEOUT_MILLIS),
-        initialValue = WordUiState()
+        initialValue = WordDetailsUiState()
       )
 
   companion object {
     private const val TIMEOUT_MILLIS = 5_000L
   }
 
-  private fun getDefinition(word: String) {
-    Log.d("ViewModel", word)
-    wordUiState = WordUiState(Word(word, "Loading..."))
-    viewModelScope.launch {
-      wordUiState = try {
-        WordUiState(Word(word, remoteWordsRepository.getDefinition(word)))
-      } catch (e: IOException) {
-        Log.d("ViewModel", "" + e.message)
-        WordUiState(Word(word, "Error."))
-      }
-    }
-  }
-
   suspend fun saveWord() {
-    localWordsRepository.insertWord(wordUiState.wordDetails)
+    localWordsRepository.insertWord(wordDetailsUiState.value.wordDetails)
   }
 
   suspend fun deleteWord() {
@@ -76,7 +80,7 @@ class WordDetailsViewModel(
 /**
  * UI state for WordDetailsScreen
  */
-data class WordUiState(
+data class WordDetailsUiState(
   val wordDetails: Word = Word("", ""),
-  val isLocal: Boolean = false
+  val isSaved: Boolean = false
 )
