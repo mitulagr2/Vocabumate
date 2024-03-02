@@ -12,12 +12,36 @@ import com.example.vocabumate.R
 import com.example.vocabumate.data.network.WordApiService
 import kotlinx.coroutines.Dispatchers
 import kotlinx.coroutines.withContext
+import okhttp3.OkHttpClient
+import retrofit2.Retrofit
+import retrofit2.converter.scalars.ScalarsConverterFactory
+import java.util.concurrent.TimeUnit
 
 private const val TAG = "FetchWorker"
 
 class FetchWorker(ctx: Context, params: WorkerParameters) : CoroutineWorker(ctx, params) {
+
+  private val baseUrl =
+    "https://vocabumate.onrender.com"
+
+  private val okHttpClient: OkHttpClient = OkHttpClient.Builder()
+    .connectTimeout(1, TimeUnit.MINUTES)
+    .readTimeout(30, TimeUnit.SECONDS)
+    .writeTimeout(15, TimeUnit.SECONDS)
+    .build()
+
+  private val retrofit = Retrofit.Builder()
+    .addConverterFactory(ScalarsConverterFactory.create())
+//    .addConverterFactory(Json.asConverterFactory("application/json".toMediaType()))
+    .baseUrl(baseUrl)
+    .client(okHttpClient)
+    .build()
+
+  private val retrofitService: WordApiService by lazy {
+    retrofit.create(WordApiService::class.java)
+  }
+
   override suspend fun doWork(): Result {
-    val wordApiService = (inputData.keyValueMap[KEY_API_SERVICE] as WordApiService)
     val wordQuery = inputData.getString(KEY_WORD_QUERY)
 
     makeStatusNotification(
@@ -34,7 +58,7 @@ class FetchWorker(ctx: Context, params: WorkerParameters) : CoroutineWorker(ctx,
           errorMessage
         }
 
-        val output = wordApiService.getDefinition(wordQuery)
+        val output = retrofitService.getDefinition(wordQuery)
         val outputData = workDataOf(KEY_QUERY_OUTPUT to output)
         Result.success(outputData)
       } catch (throwable: Throwable) {

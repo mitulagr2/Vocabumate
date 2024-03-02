@@ -1,15 +1,17 @@
 package com.example.vocabumate.ui.viewmodels
 
+import androidx.compose.runtime.getValue
+import androidx.compose.runtime.mutableStateOf
+import androidx.compose.runtime.setValue
 import androidx.lifecycle.SavedStateHandle
 import androidx.lifecycle.ViewModel
 import androidx.lifecycle.viewModelScope
 import androidx.work.WorkInfo
-import com.example.vocabumate.KEY_WORD_QUERY
+import com.example.vocabumate.KEY_QUERY_OUTPUT
 import com.example.vocabumate.data.local.LocalWordsRepository
 import com.example.vocabumate.data.local.Word
 import com.example.vocabumate.data.network.RemoteWordsRepository
 import com.example.vocabumate.ui.screens.WordDetailsDestination
-import kotlinx.coroutines.flow.Flow
 import kotlinx.coroutines.flow.SharingStarted
 import kotlinx.coroutines.flow.StateFlow
 import kotlinx.coroutines.flow.map
@@ -26,61 +28,61 @@ class WordDetailsViewModel(
 
   private val word: String = checkNotNull(savedStateHandle[WordDetailsDestination.wordArg])
 
-  private val localWordUiFlow: Flow<WordDetailsUiState> = localWordsRepository.getWordStream(word)
+  val localWordState: StateFlow<Word> = localWordsRepository.getWordStream(word)
     .map {
       if (it === null) {
+        isLocal = false
         workManagerRemoteWordsRepository.getDefinition(word)
-        WordDetailsUiState()
+        Word(word, "")
       } else {
         isSaved = true
-        WordDetailsUiState(isSaved = true, wordDetails = it)
+        it
       }
     }
+    .stateIn(
+      scope = viewModelScope,
+      started = SharingStarted.WhileSubscribed(TIMEOUT_MILLIS),
+      initialValue = Word(word, "Loading...")
+    )
 
-  private val remoteWordUiFlow: Flow<WordDetailsUiState> =
+  val remoteWordState: StateFlow<Word> =
     workManagerRemoteWordsRepository.outputWorkInfo
       .map { info ->
-        val outputWord = info.outputData.getString(KEY_WORD_QUERY)
+        val outputWord = info.outputData.getString(KEY_QUERY_OUTPUT)
         when {
           info.state.isFinished && !outputWord.isNullOrEmpty() -> {
-            WordDetailsUiState(Word(word, outputWord))
+            Word(word, outputWord)
           }
 
-          info.state == WorkInfo.State.CANCELLED -> {
-            WordDetailsUiState()
+          info.state == WorkInfo.State.FAILED -> {
+            Word(word, "Error fetching the word.")
           }
 
-          else -> WordDetailsUiState()
+          else -> Word(word, "Fetching...")
         }
       }
-
-  private var isSaved = false
-
-  val wordDetailsUiState: StateFlow<WordDetailsUiState> =
-    (if (isSaved) localWordUiFlow else remoteWordUiFlow)
       .stateIn(
         scope = viewModelScope,
         started = SharingStarted.WhileSubscribed(TIMEOUT_MILLIS),
-        initialValue = WordDetailsUiState()
+        initialValue = Word(word, "")
       )
+
+  var isLocal: Boolean by mutableStateOf(true)
+    private set
+  var isSaved: Boolean by mutableStateOf(false)
+    private set
 
   companion object {
     private const val TIMEOUT_MILLIS = 5_000L
   }
 
   suspend fun saveWord() {
-    localWordsRepository.insertWord(wordDetailsUiState.value.wordDetails)
+    localWordsRepository.insertWord(if (isLocal) localWordState.value else remoteWordState.value)
+    isSaved = true
   }
 
   suspend fun deleteWord() {
-    localWordsRepository.deleteWord(wordDetailsUiState.value.wordDetails)
+    localWordsRepository.deleteWord(localWordState.value)
+    isSaved = false
   }
 }
-
-/**
- * UI state for WordDetailsScreen
- */
-data class WordDetailsUiState(
-  val wordDetails: Word = Word("", ""),
-  val isSaved: Boolean = false
-)

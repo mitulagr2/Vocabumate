@@ -9,41 +9,16 @@ import androidx.work.NetworkType
 import androidx.work.OneTimeWorkRequestBuilder
 import androidx.work.WorkInfo
 import androidx.work.WorkManager
-import androidx.work.workDataOf
 import com.example.vocabumate.FETCH_WORD_WORK_NAME
-import com.example.vocabumate.KEY_API_SERVICE
 import com.example.vocabumate.KEY_WORD_QUERY
 import com.example.vocabumate.TAG_OUTPUT
 import com.example.vocabumate.workers.FetchWorker
 import kotlinx.coroutines.flow.Flow
 import kotlinx.coroutines.flow.mapNotNull
-import okhttp3.OkHttpClient
-import retrofit2.Retrofit
-import retrofit2.converter.scalars.ScalarsConverterFactory
-import java.util.concurrent.TimeUnit
 
 class WorkManagerRemoteWordsRepository(
   context: Context
 ) : RemoteWordsRepository {
-  private val baseUrl =
-    "https://vocabumate.onrender.com"
-
-  private val okHttpClient: OkHttpClient = OkHttpClient.Builder()
-    .connectTimeout(1, TimeUnit.MINUTES)
-    .readTimeout(30, TimeUnit.SECONDS)
-    .writeTimeout(15, TimeUnit.SECONDS)
-    .build()
-
-  private val retrofit = Retrofit.Builder()
-    .addConverterFactory(ScalarsConverterFactory.create())
-//    .addConverterFactory(Json.asConverterFactory("application/json".toMediaType()))
-    .baseUrl(baseUrl)
-    .client(okHttpClient)
-    .build()
-
-  private val retrofitService: WordApiService by lazy {
-    retrofit.create(WordApiService::class.java)
-  }
 
   private val workManager = WorkManager.getInstance(context)
 
@@ -77,7 +52,7 @@ class WorkManagerRemoteWordsRepository(
    */
   private fun createInputDataForWorkRequest(word: String): Data {
     val builder = Data.Builder()
-    builder.putAll(workDataOf(KEY_API_SERVICE to retrofitService, KEY_WORD_QUERY to word))
+    builder.putString(KEY_WORD_QUERY, word)
     return builder.build()
   }
 }

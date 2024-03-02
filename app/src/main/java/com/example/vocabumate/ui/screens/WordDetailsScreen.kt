@@ -39,7 +39,12 @@ fun WordDetailsScreen(
   viewModel: WordDetailsViewModel = viewModel(factory = AppViewModelProvider.Factory)
 ) {
   val coroutineScope = rememberCoroutineScope()
-  val wordDetailsUiState by viewModel.wordDetailsUiState.collectAsState()
+  val wordDetailsState by (
+    if (viewModel.isLocal)
+      viewModel.localWordState.collectAsState()
+    else
+      viewModel.remoteWordState.collectAsState()
+    )
 
   Scaffold(
     modifier = modifier,
@@ -48,11 +53,11 @@ fun WordDetailsScreen(
     },
   ) { innerPadding ->
     WordDetailsBody(
-      wordDetails = wordDetailsUiState.wordDetails,
-      iconVector = if (wordDetailsUiState.isSaved) Icons.Filled.Favorite else Icons.Filled.FavoriteBorder,
+      wordDetails = wordDetailsState,
+      iconVector = if (viewModel.isSaved) Icons.Filled.Favorite else Icons.Filled.FavoriteBorder,
       btnAction = {
         coroutineScope.launch {
-          if (wordDetailsUiState.isSaved) viewModel.deleteWord() else viewModel.saveWord()
+          if (viewModel.isSaved) viewModel.deleteWord() else viewModel.saveWord()
         }
       },
       modifier = Modifier
