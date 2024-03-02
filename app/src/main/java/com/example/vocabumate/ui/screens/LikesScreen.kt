@@ -22,7 +22,7 @@ import androidx.compose.ui.text.style.TextAlign
 import androidx.compose.ui.unit.dp
 import androidx.lifecycle.viewmodel.compose.viewModel
 import com.example.vocabumate.R
-import com.example.vocabumate.data.local.Word
+import com.example.vocabumate.data.Word
 import com.example.vocabumate.ui.AppViewModelProvider
 import com.example.vocabumate.ui.components.VocabumateTopAppBar
 import com.example.vocabumate.ui.navigation.NavigationDestination

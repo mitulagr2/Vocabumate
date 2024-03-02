@@ -3,7 +3,7 @@ package com.example.vocabumate.ui.viewmodels
 import androidx.lifecycle.ViewModel
 import androidx.lifecycle.viewModelScope
 import com.example.vocabumate.data.local.LocalWordsRepository
-import com.example.vocabumate.data.local.Word
+import com.example.vocabumate.data.Word
 import kotlinx.coroutines.flow.SharingStarted
 import kotlinx.coroutines.flow.StateFlow
 import kotlinx.coroutines.flow.map

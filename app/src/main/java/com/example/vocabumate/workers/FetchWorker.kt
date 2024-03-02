@@ -5,13 +5,9 @@ import android.util.Log
 import androidx.work.CoroutineWorker
 import androidx.work.WorkerParameters
 import androidx.work.workDataOf
-import com.example.vocabumate.KEY_API_SERVICE
 import com.example.vocabumate.KEY_QUERY_OUTPUT
 import com.example.vocabumate.KEY_WORD_QUERY
-import com.example.vocabumate.R
 import com.example.vocabumate.data.network.WordApiService
-import com.example.vocabumate.data.network.WordRemote
-import com.jakewharton.retrofit2.converter.kotlinx.serialization.asConverterFactory
 import kotlinx.coroutines.Dispatchers
 import kotlinx.coroutines.withContext
 import kotlinx.serialization.encodeToString
@@ -19,6 +15,7 @@ import kotlinx.serialization.json.Json
 import okhttp3.MediaType.Companion.toMediaType
 import okhttp3.OkHttpClient
 import retrofit2.Retrofit
+import retrofit2.converter.scalars.ScalarsConverterFactory
 import java.util.concurrent.TimeUnit
 
 private const val TAG = "FetchWorker"
@@ -35,8 +32,8 @@ class FetchWorker(ctx: Context, params: WorkerParameters) : CoroutineWorker(ctx,
     .build()
 
   private val retrofit = Retrofit.Builder()
-//    .addConverterFactory(ScalarsConverterFactory.create())
-    .addConverterFactory(Json.asConverterFactory("application/json".toMediaType()))
+    .addConverterFactory(ScalarsConverterFactory.create())
+//    .addConverterFactory(Json.asConverterFactory("application/json".toMediaType()))
     .baseUrl(baseUrl)
     .client(okHttpClient)
     .build()
@@ -63,7 +60,7 @@ class FetchWorker(ctx: Context, params: WorkerParameters) : CoroutineWorker(ctx,
         }
 
         val output = retrofitService.getDefinition(wordQuery)
-        val outputData = workDataOf(KEY_QUERY_OUTPUT to output.meaning)
+        val outputData = workDataOf(KEY_QUERY_OUTPUT to output)
         Result.success(outputData)
       } catch (throwable: Throwable) {
         Log.e(

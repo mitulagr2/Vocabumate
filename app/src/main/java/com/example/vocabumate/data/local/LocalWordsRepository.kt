@@ -1,5 +1,6 @@
 package com.example.vocabumate.data.local
 
+import com.example.vocabumate.data.Word
 import kotlinx.coroutines.flow.Flow
 
 /**

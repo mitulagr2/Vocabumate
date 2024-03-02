@@ -9,13 +9,14 @@ import androidx.lifecycle.viewModelScope
 import androidx.work.WorkInfo
 import com.example.vocabumate.KEY_QUERY_OUTPUT
 import com.example.vocabumate.data.local.LocalWordsRepository
-import com.example.vocabumate.data.local.Word
+import com.example.vocabumate.data.Word
 import com.example.vocabumate.data.network.RemoteWordsRepository
 import com.example.vocabumate.ui.screens.WordDetailsDestination
 import kotlinx.coroutines.flow.SharingStarted
 import kotlinx.coroutines.flow.StateFlow
 import kotlinx.coroutines.flow.map
 import kotlinx.coroutines.flow.stateIn
+import kotlinx.serialization.json.Json
 
 /**
  * ViewModel to retrieve, update and delete a word from the [LocalWordsRepository]'s data source.
@@ -48,10 +49,11 @@ class WordDetailsViewModel(
   val remoteWordState: StateFlow<Word> =
     workManagerRemoteWordsRepository.outputWorkInfo
       .map { info ->
-        val outputWord = info.outputData.getString(KEY_QUERY_OUTPUT)
+        val outputJson = info.outputData.getString(KEY_QUERY_OUTPUT) ?: "{\"word\":\"\",\"meaning\":\"\"}"
+        val outputWord = Json.decodeFromString<Word>(outputJson)
         when {
-          info.state.isFinished && !outputWord.isNullOrEmpty() -> {
-            Word(word, outputWord)
+          info.state.isFinished -> {
+            outputWord
           }
 
           info.state == WorkInfo.State.FAILED -> {
