@@ -43,7 +43,8 @@ val Typography = Typography(
     fontSize = 24.sp
   ),
   titleMedium = TextStyle(
-    fontFamily = Oregano
+    fontFamily = Oregano,
+    fontSize = 20.sp
   ),
   titleSmall = TextStyle(
     fontFamily = Oregano

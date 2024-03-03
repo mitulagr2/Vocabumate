@@ -24,6 +24,7 @@ import androidx.compose.ui.graphics.Color
 import androidx.compose.ui.graphics.vector.ImageVector
 import androidx.compose.ui.tooling.preview.Preview
 import androidx.compose.ui.unit.dp
+import com.example.vocabumate.capitalize
 import com.example.vocabumate.data.Word
 import com.example.vocabumate.ui.theme.VocabumateTheme
 
@@ -58,7 +59,7 @@ fun FlashCard(
           .fillMaxWidth()
       ) {
         Text(
-          text = capitalize(data.info.word),
+          text = data.info.word.capitalize(),
           style = MaterialTheme.typography.displayMedium
         )
         IconButton(
@@ -75,9 +76,6 @@ fun FlashCard(
     }
   }
 }
-
-private fun capitalize(input: String) =
-  input.substring(0, 1).uppercase() + input.substring(1).lowercase()
 
 @Preview(showBackground = true)
 @Composable
