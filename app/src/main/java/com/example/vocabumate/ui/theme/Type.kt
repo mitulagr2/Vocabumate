@@ -18,27 +18,57 @@ val Oregano = FontFamily(
 
 // Set of Material typography styles to start with
 val Typography = Typography(
+  displayLarge = TextStyle(
+    fontFamily = Pacifico,
+    fontSize = 24.sp
+  ),
+  displayMedium = TextStyle(
+    fontFamily = Oregano
+  ),
+  displaySmall = TextStyle(
+    fontFamily = Oregano
+  ),
+  headlineLarge = TextStyle(
+    fontFamily = Oregano
+  ),
+  headlineMedium = TextStyle(
+    fontFamily = Oregano
+  ),
+  headlineSmall = TextStyle(
+    fontFamily = Oregano
+  ),
+  titleLarge = TextStyle(
+    fontFamily = Oregano,
+    fontSize = 24.sp
+  ),
+  titleMedium = TextStyle(
+    fontFamily = Oregano
+  ),
+  titleSmall = TextStyle(
+    fontFamily = Oregano
+  ),
   bodyLarge = TextStyle(
-    fontFamily = FontFamily.Default,
-    fontWeight = FontWeight.Normal,
+    fontFamily = Oregano,
     fontSize = 16.sp,
     lineHeight = 24.sp,
     letterSpacing = 0.5.sp
-  )
-  /* Other default text styles to override
-    titleLarge = TextStyle(
-        fontFamily = FontFamily.Default,
-        fontWeight = FontWeight.Normal,
-        fontSize = 22.sp,
-        lineHeight = 28.sp,
-        letterSpacing = 0.sp
-    ),
-    labelSmall = TextStyle(
-        fontFamily = FontFamily.Default,
-        fontWeight = FontWeight.Medium,
-        fontSize = 11.sp,
-        lineHeight = 16.sp,
-        letterSpacing = 0.5.sp
-    )
-    */
+  ),
+  bodyMedium = TextStyle(
+    fontFamily = Oregano
+  ),
+  bodySmall = TextStyle(
+    fontFamily = Oregano
+  ),
+  labelLarge = TextStyle(
+    fontFamily = Oregano
+  ),
+  labelMedium = TextStyle(
+    fontFamily = Oregano
+  ),
+  labelSmall = TextStyle(
+    fontFamily = Oregano,
+    fontSize = 11.sp,
+    lineHeight = 16.sp,
+    letterSpacing = 0.5.sp
+  ),
 )
