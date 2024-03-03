@@ -8,21 +8,25 @@ import androidx.compose.foundation.layout.fillMaxWidth
 import androidx.compose.foundation.layout.padding
 import androidx.compose.foundation.lazy.LazyColumn
 import androidx.compose.foundation.lazy.items
-import androidx.compose.material3.Card
-import androidx.compose.material3.CardDefaults
+import androidx.compose.material3.Divider
 import androidx.compose.material3.MaterialTheme
 import androidx.compose.material3.Scaffold
+import androidx.compose.material3.Surface
 import androidx.compose.material3.Text
 import androidx.compose.runtime.Composable
 import androidx.compose.runtime.collectAsState
 import androidx.compose.runtime.getValue
 import androidx.compose.ui.Alignment
 import androidx.compose.ui.Modifier
+import androidx.compose.ui.draw.drawBehind
+import androidx.compose.ui.geometry.Offset
+import androidx.compose.ui.graphics.Color
 import androidx.compose.ui.res.stringResource
 import androidx.compose.ui.text.style.TextAlign
 import androidx.compose.ui.unit.dp
 import androidx.lifecycle.viewmodel.compose.viewModel
 import com.example.vocabumate.R
+import com.example.vocabumate.capitalize
 import com.example.vocabumate.data.Word
 import com.example.vocabumate.ui.AppViewModelProvider
 import com.example.vocabumate.ui.components.TopAppBar
@@ -92,6 +96,7 @@ private fun WordList(
       WordCard(word = item,
         modifier = Modifier
           .clickable { onWordClick(item.word) })
+      Divider(color = Color(0xA3DDDDDD), thickness = 1.dp)
     }
   }
 }
@@ -100,16 +105,18 @@ private fun WordList(
 private fun WordCard(
   word: Word, modifier: Modifier = Modifier
 ) {
-  Card(
-    modifier = modifier,
-    elevation = CardDefaults.cardElevation(defaultElevation = 2.dp)
+  Surface(
+    modifier = modifier
+//    elevation = CardDefaults.cardElevation(defaultElevation = 2.dp)
   ) {
     Row(
-      modifier = Modifier.fillMaxWidth()
+      modifier = Modifier
+        .fillMaxWidth()
+        .padding(horizontal = 32.dp, vertical = 24.dp)
     ) {
       Text(
-        text = word.word,
-        style = MaterialTheme.typography.titleLarge,
+        text = word.word.capitalize(),
+        style = MaterialTheme.typography.titleMedium,
       )
     }
   }

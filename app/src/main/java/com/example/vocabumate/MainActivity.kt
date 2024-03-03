@@ -6,9 +6,7 @@ import androidx.activity.compose.setContent
 import androidx.compose.foundation.layout.fillMaxSize
 import androidx.compose.material3.MaterialTheme
 import androidx.compose.material3.Surface
-import androidx.compose.runtime.Composable
 import androidx.compose.ui.Modifier
-import androidx.compose.ui.tooling.preview.Preview
 import com.example.vocabumate.ui.theme.VocabumateTheme
 
 class MainActivity : ComponentActivity() {
@@ -27,42 +25,5 @@ class MainActivity : ComponentActivity() {
   }
 }
 
-@Preview(showBackground = true)
-@Composable
-fun AppCompactPreview() {
-  VocabumateTheme {
-    Surface(
-      modifier = Modifier.fillMaxSize(),
-      color = MaterialTheme.colorScheme.background
-    ) {
-      VocabumateApp()
-    }
-  }
-}
-
-@Preview(showBackground = true, widthDp = 700)
-@Composable
-fun AppMediumPreview() {
-  VocabumateTheme {
-    Surface(
-      modifier = Modifier.fillMaxSize(),
-      color = MaterialTheme.colorScheme.background
-    ) {
-      VocabumateApp()
-    }
-  }
-}
-
-@Preview(showBackground = true, widthDp = 1000)
-@Composable
-fun AppExpandedPreview() {
-  VocabumateTheme {
-    Surface(
-      modifier = Modifier.fillMaxSize(),
-      color = MaterialTheme.colorScheme.background
-    ) {
-      VocabumateApp()
-    }
-  }
-}
-
+fun String.capitalize() =
+  this.substring(0, 1).uppercase() + this.substring(1).lowercase()
