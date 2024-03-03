@@ -2,6 +2,7 @@ package com.example.vocabumate.ui.components
 
 import androidx.compose.foundation.background
 import androidx.compose.foundation.layout.Column
+import androidx.compose.foundation.layout.Spacer
 import androidx.compose.foundation.layout.height
 import androidx.compose.foundation.layout.padding
 import androidx.compose.foundation.layout.size
@@ -40,6 +41,7 @@ fun MenuItem(
 ) {
   Button(
     onClick = data.action,
+    shape = RoundedCornerShape(16.dp),
     colors = ButtonDefaults.buttonColors(containerColor = Color.Transparent),
     modifier = modifier
       .height(124.dp)
@@ -61,6 +63,7 @@ fun MenuItem(
         contentDescription = data.text,
         modifier = Modifier.size(32.dp)
       )
+      Spacer(modifier = Modifier.height(4.dp))
       Text(text = data.text, style = MaterialTheme.typography.titleLarge)
     }
   }

@@ -6,10 +6,7 @@ import androidx.compose.foundation.layout.padding
 import androidx.compose.material.icons.Icons
 import androidx.compose.material.icons.filled.Favorite
 import androidx.compose.material.icons.filled.FavoriteBorder
-import androidx.compose.material3.Icon
-import androidx.compose.material3.IconButton
 import androidx.compose.material3.Scaffold
-import androidx.compose.material3.Text
 import androidx.compose.runtime.Composable
 import androidx.compose.runtime.collectAsState
 import androidx.compose.runtime.getValue
@@ -20,6 +17,8 @@ import androidx.lifecycle.viewmodel.compose.viewModel
 import com.example.vocabumate.R
 import com.example.vocabumate.data.Word
 import com.example.vocabumate.ui.AppViewModelProvider
+import com.example.vocabumate.ui.components.CardData
+import com.example.vocabumate.ui.components.FlashCard
 import com.example.vocabumate.ui.components.TopAppBar
 import com.example.vocabumate.ui.navigation.NavigationDestination
 import com.example.vocabumate.ui.viewmodels.WordDetailsViewModel
@@ -71,12 +70,12 @@ private fun WordDetailsBody(
   modifier: Modifier = Modifier
 ) {
   Column(modifier = modifier) {
-    IconButton(onClick = btnAction) {
-      Icon(iconVector, contentDescription = "Like")
-    }
-    Text(text = info.word)
-    Text(
-      text = info.meaning
+    FlashCard(
+      data = CardData(
+        info = info,
+        likeAction = btnAction,
+        icon = iconVector
+      )
     )
   }
 }
