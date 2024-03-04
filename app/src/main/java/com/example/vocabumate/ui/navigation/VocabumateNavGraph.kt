@@ -38,31 +38,33 @@ fun VocabumateNavHost(
     modifier = modifier
   ) {
     composable(route = HomeDestination.route) {
-      HomeScreen(
-        navigateTo = navController::navigate,
-        navigateToWordDetails = { navController.navigate("${WordDetailsDestination.route}/$it") },
-      )
+      NavItem(navController = navController) {
+        HomeScreen(
+          navigateToWordDetails = { navController.navigate("${WordDetailsDestination.route}/$it") },
+        )
+      }
     }
     composable(route = LikesDestination.route) {
-      LikesScreen(
-        navigateTo = navController::navigate,
-        navigateToWordDetails = { navController.navigate("${WordDetailsDestination.route}/$it") },
-      )
+      NavItem(navController = navController) {
+        LikesScreen(
+          navigateToWordDetails = { navController.navigate("${WordDetailsDestination.route}/$it") },
+        )
+      }
     }
     composable(route = DiscoverDestination.route) {
-      DiscoverScreen(
-        navigateTo = navController::navigate,
-      )
+      NavItem(navController = navController) {
+        DiscoverScreen()
+      }
     }
     composable(route = AnalyticsDestination.route) {
-      AnalyticsScreen(
-        navigateTo = navController::navigate,
-      )
+      NavItem(navController = navController) {
+        AnalyticsScreen()
+      }
     }
     composable(route = ProfileDestination.route) {
-      ProfileScreen(
-        navigateTo = navController::navigate,
-      )
+      NavItem(navController = navController) {
+        ProfileScreen()
+      }
     }
     composable(
       route = WordDetailsDestination.routeWithArgs,
@@ -70,19 +72,19 @@ fun VocabumateNavHost(
         type = NavType.StringType
       })
     ) {
-      WordDetailsScreen(
-        navigateTo = navController::navigate,
-      )
+      NavItem(navController = navController) {
+        WordDetailsScreen()
+      }
     }
     composable(route = DailyDestination.route) {
-      DailyScreen(
-        navigateTo = navController::navigate,
-      )
+      NavItem(navController = navController) {
+        DailyScreen()
+      }
     }
     composable(route = LoginDestination.route) {
-      LoginScreen(
-        navigateTo = navController::navigate,
-      )
+      NavItem(navController = navController) {
+        LoginScreen()
+      }
     }
   }
 }

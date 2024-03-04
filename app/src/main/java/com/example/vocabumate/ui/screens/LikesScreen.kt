@@ -3,14 +3,12 @@ package com.example.vocabumate.ui.screens
 import androidx.compose.foundation.clickable
 import androidx.compose.foundation.layout.Column
 import androidx.compose.foundation.layout.Row
-import androidx.compose.foundation.layout.fillMaxSize
 import androidx.compose.foundation.layout.fillMaxWidth
 import androidx.compose.foundation.layout.padding
 import androidx.compose.foundation.lazy.LazyColumn
 import androidx.compose.foundation.lazy.items
 import androidx.compose.material3.Divider
 import androidx.compose.material3.MaterialTheme
-import androidx.compose.material3.Scaffold
 import androidx.compose.material3.Surface
 import androidx.compose.material3.Text
 import androidx.compose.runtime.Composable
@@ -18,8 +16,6 @@ import androidx.compose.runtime.collectAsState
 import androidx.compose.runtime.getValue
 import androidx.compose.ui.Alignment
 import androidx.compose.ui.Modifier
-import androidx.compose.ui.draw.drawBehind
-import androidx.compose.ui.geometry.Offset
 import androidx.compose.ui.graphics.Color
 import androidx.compose.ui.res.stringResource
 import androidx.compose.ui.text.style.TextAlign
@@ -29,7 +25,6 @@ import com.example.vocabumate.R
 import com.example.vocabumate.capitalize
 import com.example.vocabumate.data.Word
 import com.example.vocabumate.ui.AppViewModelProvider
-import com.example.vocabumate.ui.components.TopAppBar
 import com.example.vocabumate.ui.navigation.NavigationDestination
 import com.example.vocabumate.ui.viewmodels.LikesViewModel
 
@@ -40,48 +35,25 @@ object LikesDestination : NavigationDestination {
 
 @Composable
 fun LikesScreen(
-  navigateTo: (String) -> Unit,
   navigateToWordDetails: (String) -> Unit,
   modifier: Modifier = Modifier,
   viewModel: LikesViewModel = viewModel(factory = AppViewModelProvider.Factory)
 ) {
   val localList by viewModel.allLocalWordsState.collectAsState()
 
-  Scaffold(
-    modifier = modifier,
-    topBar = {
-      TopAppBar(navigateTo)
-    },
-  ) { innerPadding ->
-    LikesBody(
-      wordList = localList,
-      onWordClick = navigateToWordDetails,
-      modifier = Modifier
-        .padding(innerPadding)
-        .fillMaxSize()
-    )
-  }
-}
-
-@Composable
-private fun LikesBody(
-  wordList: List<Word>,
-  onWordClick: (String) -> Unit,
-  modifier: Modifier = Modifier
-) {
   Column(
     horizontalAlignment = Alignment.CenterHorizontally,
     modifier = modifier
   ) {
-    if (wordList.isEmpty()) {
+    if (localList.isEmpty()) {
       Text(
         text = stringResource(R.string.empty_list_local_message),
         textAlign = TextAlign.Center,
       )
     } else {
       WordList(
-        wordList = wordList,
-        onWordClick = { onWordClick(it) },
+        wordList = localList,
+        onWordClick = { navigateToWordDetails(it) },
       )
     }
   }

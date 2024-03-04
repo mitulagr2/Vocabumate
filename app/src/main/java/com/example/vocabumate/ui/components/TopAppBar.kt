@@ -9,8 +9,6 @@ import androidx.compose.foundation.layout.fillMaxWidth
 import androidx.compose.foundation.layout.padding
 import androidx.compose.material.icons.Icons
 import androidx.compose.material.icons.filled.DateRange
-import androidx.compose.material.icons.filled.Home
-import androidx.compose.material.icons.filled.Info
 import androidx.compose.material.icons.filled.Person
 import androidx.compose.material.icons.filled.Star
 import androidx.compose.material3.ExperimentalMaterial3Api
@@ -20,6 +18,7 @@ import androidx.compose.material3.MaterialTheme
 import androidx.compose.material3.Surface
 import androidx.compose.material3.Text
 import androidx.compose.material3.TopAppBar
+import androidx.compose.material3.TopAppBarScrollBehavior
 import androidx.compose.runtime.Composable
 import androidx.compose.runtime.getValue
 import androidx.compose.runtime.mutableStateOf
@@ -32,12 +31,6 @@ import androidx.compose.ui.res.stringResource
 import androidx.compose.ui.tooling.preview.Preview
 import androidx.compose.ui.unit.dp
 import com.example.vocabumate.R
-import com.example.vocabumate.ui.screens.AnalyticsDestination
-import com.example.vocabumate.ui.screens.DailyDestination
-import com.example.vocabumate.ui.screens.DiscoverDestination
-import com.example.vocabumate.ui.screens.HomeDestination
-import com.example.vocabumate.ui.screens.LikesDestination
-import com.example.vocabumate.ui.screens.ProfileDestination
 import com.example.vocabumate.ui.theme.VocabumateTheme
 
 /**
@@ -46,31 +39,37 @@ import com.example.vocabumate.ui.theme.VocabumateTheme
 @OptIn(ExperimentalMaterial3Api::class, ExperimentalLayoutApi::class)
 @Composable
 fun TopAppBar(
-  navigateTo: (String) -> Unit,
-  modifier: Modifier = Modifier
+  navigateToHome: () -> Unit,
+  navigateToDaily: () -> Unit,
+  navigateToLikes: () -> Unit,
+  navigateToDiscover: () -> Unit,
+  navigateToAnalytics: () -> Unit,
+  navigateToProfile: () -> Unit,
+  modifier: Modifier = Modifier,
+  scrollBehavior: TopAppBarScrollBehavior? = null
 ) {
   val menu = listOf(
     MenuData(
       text = "Likes",
-      action = { navigateTo(LikesDestination.route) },
+      action = navigateToLikes,
       icon = Icons.Filled.Star,
       gradient = Color(0xFF4B33B6) to Color(0xFFAD61D0)
     ),
-    MenuData(
-      text = "Discover",
-      action = { navigateTo(DiscoverDestination.route) },
-      icon = Icons.Filled.Home,
-      gradient = Color(0xFFFF7711) to Color(0xFFFFBB88)
-    ),
-    MenuData(
-      text = "Analytics",
-      action = { navigateTo(AnalyticsDestination.route) },
-      icon = Icons.Filled.Info,
-      gradient = Color(0xFF68D9FF) to Color(0xFFCFF3FF)
-    ),
+//    MenuData(
+//      text = "Discover",
+//      action = navigateToDiscover,
+//      icon = Icons.Filled.Home,
+//      gradient = Color(0xFFFF7711) to Color(0xFFFFBB88)
+//    ),
+//    MenuData(
+//      text = "Analytics",
+//      action = navigateToAnalytics,
+//      icon = Icons.Filled.Info,
+//      gradient = Color(0xFF68D9FF) to Color(0xFFCFF3FF)
+//    ),
     MenuData(
       text = "Profile",
-      action = { navigateTo(ProfileDestination.route) },
+      action = navigateToProfile,
       icon = Icons.Filled.Person,
       gradient = Color(0xFFE575FF) to Color(0xFFF3BEFF)
     )
@@ -91,16 +90,17 @@ fun TopAppBar(
   ) {
     Column {
       TopAppBar(
+        scrollBehavior = scrollBehavior,
         title = {
           Text(
             stringResource(R.string.app_name),
-            modifier = Modifier.clickable { navigateTo(HomeDestination.route) },
+            modifier = Modifier.clickable { navigateToHome() },
             style = MaterialTheme.typography.displayLarge
           )
         },
         actions = {
           IconButton(
-            onClick = { navigateTo(DailyDestination.route) },
+            onClick = { navigateToDaily() },
             modifier = Modifier.padding(top = 8.dp)
           ) {
             Icon(Icons.Filled.DateRange, contentDescription = "Daily word")
@@ -127,10 +127,18 @@ fun TopAppBar(
   }
 }
 
+@OptIn(ExperimentalMaterial3Api::class)
 @Preview(showBackground = true)
 @Composable
 fun TopAppBarPreview() {
   VocabumateTheme {
-    TopAppBar(navigateTo = {})
+    TopAppBar(
+      navigateToHome = { },
+      navigateToDaily = { },
+      navigateToLikes = { },
+      navigateToDiscover = { },
+      navigateToAnalytics = { },
+      navigateToProfile = { },
+    )
   }
 }
