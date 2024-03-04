@@ -15,6 +15,7 @@ import androidx.compose.runtime.collectAsState
 import androidx.compose.runtime.getValue
 import androidx.compose.ui.Modifier
 import androidx.compose.ui.platform.LocalConfiguration
+import androidx.compose.ui.res.stringResource
 import androidx.compose.ui.unit.dp
 import androidx.lifecycle.viewmodel.compose.viewModel
 import com.example.vocabumate.R
@@ -53,25 +54,33 @@ fun HomeScreen(
         )
       }
       Spacer(modifier = Modifier.height(40.dp))
-      Row(
-        modifier = Modifier.horizontalScroll(rememberScrollState())
-      ) {
-        FlashCard(
-          data = CardData(info = localList.find { it.word == first } ?: Word("", ""),
-            isRevise = true),
-          modifier = Modifier.width((LocalConfiguration.current.screenWidthDp - 64).dp)
-        )
-        Spacer(modifier = Modifier.width(32.dp))
-        FlashCard(
-          data = CardData(info = localList.find { it.word == second } ?: Word("", ""),
-            isRevise = true),
-          modifier = Modifier.width((LocalConfiguration.current.screenWidthDp - 64).dp)
-        )
-        Spacer(modifier = Modifier.width(32.dp))
-        FlashCard(
-          data = CardData(info = localList.find { it.word == third } ?: Word("", ""),
-            isRevise = true),
-          modifier = Modifier.width((LocalConfiguration.current.screenWidthDp - 64).dp)
+      if (localList.size > 3) {
+        Row(
+          modifier = Modifier.horizontalScroll(rememberScrollState())
+        ) {
+          FlashCard(
+            data = CardData(info = localList.find { it.word == first } ?: Word("", ""),
+              isRevise = true),
+            modifier = Modifier.width((LocalConfiguration.current.screenWidthDp - 64).dp)
+          )
+          Spacer(modifier = Modifier.width(32.dp))
+          FlashCard(
+            data = CardData(info = localList.find { it.word == second } ?: Word("", ""),
+              isRevise = true),
+            modifier = Modifier.width((LocalConfiguration.current.screenWidthDp - 64).dp)
+          )
+          Spacer(modifier = Modifier.width(32.dp))
+          FlashCard(
+            data = CardData(info = localList.find { it.word == third } ?: Word("", ""),
+              isRevise = true),
+            modifier = Modifier.width((LocalConfiguration.current.screenWidthDp - 64).dp)
+          )
+        }
+
+      } else {
+        Text(
+          text = "Add more words to start revising.",
+          style = MaterialTheme.typography.bodyLarge,
         )
       }
     }

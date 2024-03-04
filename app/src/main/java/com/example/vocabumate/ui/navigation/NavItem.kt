@@ -5,10 +5,8 @@ import androidx.compose.foundation.layout.fillMaxSize
 import androidx.compose.foundation.layout.padding
 import androidx.compose.material3.ExperimentalMaterial3Api
 import androidx.compose.material3.Scaffold
-import androidx.compose.material3.TopAppBarDefaults
 import androidx.compose.runtime.Composable
 import androidx.compose.ui.Modifier
-import androidx.compose.ui.input.nestedscroll.nestedScroll
 import androidx.navigation.NavHostController
 import com.example.vocabumate.ui.components.TopAppBar
 import com.example.vocabumate.ui.screens.AnalyticsDestination
@@ -24,9 +22,9 @@ fun NavItem(
   navController: NavHostController,
   content: @Composable () -> Unit
 ) {
-  val scrollBehavior = TopAppBarDefaults.enterAlwaysScrollBehavior()
+//  val scrollBehavior = TopAppBarDefaults.enterAlwaysScrollBehavior()
   Scaffold(
-    modifier = Modifier.nestedScroll(scrollBehavior.nestedScrollConnection),
+//    modifier = Modifier.nestedScroll(scrollBehavior.nestedScrollConnection),
     topBar = {
       TopAppBar(
         navigateToHome = { navController.popBackStack(HomeDestination.route, false) },
@@ -35,7 +33,7 @@ fun NavItem(
         navigateToDiscover = { navController.navigate(DiscoverDestination.route) },
         navigateToAnalytics = { navController.navigate(AnalyticsDestination.route) },
         navigateToProfile = { navController.navigate(ProfileDestination.route) },
-        scrollBehavior = scrollBehavior
+//        scrollBehavior = scrollBehavior
       )
     },
   ) { innerPadding ->
