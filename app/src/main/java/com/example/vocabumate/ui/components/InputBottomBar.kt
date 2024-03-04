@@ -1,6 +1,13 @@
 package com.example.vocabumate.ui.components
 
+import androidx.compose.foundation.background
+import androidx.compose.foundation.layout.IntrinsicSize
 import androidx.compose.foundation.layout.Row
+import androidx.compose.foundation.layout.fillMaxHeight
+import androidx.compose.foundation.layout.height
+import androidx.compose.foundation.layout.padding
+import androidx.compose.foundation.text.KeyboardActions
+import androidx.compose.foundation.text.KeyboardOptions
 import androidx.compose.material.icons.Icons
 import androidx.compose.material.icons.filled.Search
 import androidx.compose.material3.FloatingActionButton
@@ -18,8 +25,10 @@ import androidx.compose.ui.Modifier
 import androidx.compose.ui.draw.shadow
 import androidx.compose.ui.graphics.Color
 import androidx.compose.ui.res.stringResource
+import androidx.compose.ui.text.input.ImeAction
 import androidx.compose.ui.unit.dp
 import com.example.vocabumate.R
+import com.example.vocabumate.sanitizeWord
 
 @Composable
 fun InputBottomBar(
@@ -32,34 +41,36 @@ fun InputBottomBar(
 
   Row(
     modifier = modifier
-      .shadow(
-        elevation = 16.dp,
-        spotColor = Color.DarkGray
-      )
+      .shadow(elevation = 16.dp, spotColor = Color.DarkGray)
+      .background(MaterialTheme.colorScheme.surface)
+      .padding(start = 8.dp, top = 16.dp, end = 24.dp, bottom = 16.dp)
+      .height(IntrinsicSize.Min)
   ) {
     TextField(
       value = query,
       singleLine = true,
-      modifier = Modifier.weight(1F),
+      modifier = Modifier.weight(1F).fillMaxHeight(),
       colors = TextFieldDefaults.colors(
-        focusedContainerColor = MaterialTheme.colorScheme.surface,
-        unfocusedContainerColor = MaterialTheme.colorScheme.surface,
-        disabledContainerColor = MaterialTheme.colorScheme.surface,
+        focusedContainerColor = Color.Transparent,
+        unfocusedContainerColor = Color.Transparent,
+        disabledContainerColor = Color.Transparent,
         focusedIndicatorColor = Color.Transparent,
         unfocusedIndicatorColor = Color.Transparent,
         disabledIndicatorColor = Color.Transparent
       ),
-      onValueChange = { query = it },
+      onValueChange = {
+        query = it.sanitizeWord()
+      },
       placeholder = { Text(stringResource(R.string.word_input_placeholder)) },
-      //      keyboardOptions = KeyboardOptions.Default.copy(
-      //        imeAction = ImeAction.Done
-      //      ),
-      //      keyboardActions = KeyboardActions(
-      //        onDone = { }
-      //      )
+      keyboardOptions = KeyboardOptions.Default.copy(
+        imeAction = ImeAction.Go
+      ),
+      keyboardActions = KeyboardActions(
+        onDone = { navigateToWordDetails(query.lowercase()) }
+      )
     )
     FloatingActionButton(
-      onClick = { navigateToWordDetails(query) }
+      onClick = { navigateToWordDetails(query.lowercase()) }
     ) {
       Icon(Icons.Filled.Search, contentDescription = "Search")
     }

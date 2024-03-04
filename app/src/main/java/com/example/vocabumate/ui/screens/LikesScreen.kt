@@ -3,7 +3,9 @@ package com.example.vocabumate.ui.screens
 import androidx.compose.foundation.clickable
 import androidx.compose.foundation.layout.Column
 import androidx.compose.foundation.layout.Row
+import androidx.compose.foundation.layout.Spacer
 import androidx.compose.foundation.layout.fillMaxWidth
+import androidx.compose.foundation.layout.height
 import androidx.compose.foundation.layout.padding
 import androidx.compose.foundation.lazy.LazyColumn
 import androidx.compose.foundation.lazy.items
@@ -43,12 +45,20 @@ fun LikesScreen(
 
   Column(
     horizontalAlignment = Alignment.CenterHorizontally,
-    modifier = modifier
+    modifier = modifier.padding(vertical = 24.dp)
   ) {
+    Row {
+      Text(
+        text = "Likes",
+        style = MaterialTheme.typography.headlineMedium,
+        modifier = Modifier.padding(start = 32.dp).fillMaxWidth()
+      )
+    }
+    Spacer(modifier = Modifier.height(16.dp))
     if (localList.isEmpty()) {
       Text(
         text = stringResource(R.string.empty_list_local_message),
-        textAlign = TextAlign.Center,
+        style = MaterialTheme.typography.bodyLarge,
       )
     } else {
       WordList(
@@ -64,7 +74,7 @@ private fun WordList(
   wordList: List<Word>, onWordClick: (String) -> Unit, modifier: Modifier = Modifier
 ) {
   LazyColumn(modifier = modifier) {
-    items(items = wordList) { item ->
+    items(items = wordList, key = { item -> item.word }) { item ->
       WordCard(word = item,
         modifier = Modifier
           .clickable { onWordClick(item.word) })

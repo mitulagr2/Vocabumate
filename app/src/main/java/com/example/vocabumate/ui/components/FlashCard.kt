@@ -30,8 +30,8 @@ import com.example.vocabumate.ui.theme.VocabumateTheme
 
 data class CardData(
   val info: Word,
-  val likeAction: () -> Unit,
-  val icon: ImageVector,
+  val likeAction: () -> Unit = {},
+  val icon: ImageVector = Icons.Filled.FavoriteBorder,
   val isRevise: Boolean = false,
   val surfaceAction: () -> Unit = {}
 )
@@ -43,7 +43,6 @@ fun FlashCard(
 ) {
   Surface(
     modifier = modifier
-      .padding(32.dp)
       .border(width = 1.dp, color = Color(0xA3DDDDDD), shape = RoundedCornerShape(8.dp))
       .clickable(enabled = data.isRevise) { data.surfaceAction() }
   ) {
@@ -60,14 +59,16 @@ fun FlashCard(
           .fillMaxWidth()
       ) {
         Text(
-          text = data.info.word.capitalize(),
+          text = if(data.info.word.isNotEmpty()) data.info.word.capitalize() else "",
           style = MaterialTheme.typography.displayMedium
         )
-        IconButton(
-          onClick = data.likeAction,
-          modifier = Modifier.padding(top = 4.dp)
-        ) {
-          Icon(data.icon, contentDescription = "Like")
+        if (!data.isRevise) {
+          IconButton(
+            onClick = data.likeAction,
+            modifier = Modifier.padding(top = 4.dp)
+          ) {
+            Icon(data.icon, contentDescription = "Like")
+          }
         }
       }
       Text(

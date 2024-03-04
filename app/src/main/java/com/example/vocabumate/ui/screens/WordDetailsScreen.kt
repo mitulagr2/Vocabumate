@@ -1,6 +1,7 @@
 package com.example.vocabumate.ui.screens
 
 import androidx.compose.foundation.layout.Column
+import androidx.compose.foundation.layout.padding
 import androidx.compose.material.icons.Icons
 import androidx.compose.material.icons.filled.Favorite
 import androidx.compose.material.icons.filled.FavoriteBorder
@@ -9,6 +10,7 @@ import androidx.compose.runtime.collectAsState
 import androidx.compose.runtime.getValue
 import androidx.compose.runtime.rememberCoroutineScope
 import androidx.compose.ui.Modifier
+import androidx.compose.ui.unit.dp
 import androidx.lifecycle.viewmodel.compose.viewModel
 import com.example.vocabumate.R
 import com.example.vocabumate.ui.AppViewModelProvider
@@ -33,7 +35,7 @@ fun WordDetailsScreen(
   val coroutineScope = rememberCoroutineScope()
   val wordDetailsUiState by viewModel.wordDetailsState.collectAsState()
 
-  Column(modifier = modifier) {
+  Column(modifier = modifier.padding(horizontal = 32.dp, vertical = 24.dp)) {
     FlashCard(
       data = CardData(
         info = wordDetailsUiState,
