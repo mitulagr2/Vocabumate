@@ -4,15 +4,19 @@ import android.content.Context
 import androidx.lifecycle.asFlow
 import androidx.work.Constraints
 import androidx.work.Data
+import androidx.work.ExistingPeriodicWorkPolicy
 import androidx.work.ExistingWorkPolicy
 import androidx.work.NetworkType
 import androidx.work.OneTimeWorkRequestBuilder
+import androidx.work.PeriodicWorkRequestBuilder
 import androidx.work.WorkInfo
 import androidx.work.WorkManager
+import com.example.vocabumate.GET_DAILY_WORK_NAME
 import com.example.vocabumate.GET_WORD_WORK_NAME
 import com.example.vocabumate.KEY_ACTION
 import com.example.vocabumate.KEY_PAYLOAD
 import com.example.vocabumate.MODIFY_WORD_WORK_NAME
+import com.example.vocabumate.TAG_DAILY
 import com.example.vocabumate.TAG_OUTPUT
 import com.example.vocabumate.data.local.LocalWordsRepository
 import com.example.vocabumate.data.local.VocabumateDatabase
@@ -24,6 +28,7 @@ import kotlinx.coroutines.flow.Flow
 import kotlinx.coroutines.flow.mapNotNull
 import kotlinx.serialization.encodeToString
 import kotlinx.serialization.json.Json
+import java.util.concurrent.TimeUnit
 
 interface WordsRepository : LocalWordsRepository, RemoteWordsRepository
 
@@ -43,6 +48,13 @@ class WorkManagerWordsRepository(context: Context) : WordsRepository {
           WorkInfo.State.FAILED -> roomInfo
           else -> it.find { it -> it.tags.contains("com.example.vocabumate.workers.FetchWorker") }
         }
+      } else null
+    }
+
+  override val dailyWordInfo: Flow<WorkInfo> =
+    workManager.getWorkInfosByTagLiveData(TAG_DAILY).asFlow().mapNotNull {
+      if (it.isNotEmpty()) {
+        it.first()
       } else null
     }
 
@@ -99,6 +111,24 @@ class WorkManagerWordsRepository(context: Context) : WordsRepository {
       )
 
     continuation.enqueue()
+  }
+
+  init {
+    val remoteConstraints = Constraints.Builder()
+      .setRequiredNetworkType(NetworkType.CONNECTED)
+      .build()
+
+    val fetchBuilder = PeriodicWorkRequestBuilder<FetchWorker>(24, TimeUnit.HOURS)
+      .addTag(TAG_DAILY)
+      .setConstraints(remoteConstraints)
+      .setInputData(createInputDataForWorkRequest("", "DAILY"))
+
+    workManager
+      .enqueueUniquePeriodicWork(
+        GET_DAILY_WORK_NAME,
+        ExistingPeriodicWorkPolicy.CANCEL_AND_REENQUEUE,
+        fetchBuilder.build()
+      )
   }
 
   private fun createInputDataForWorkRequest(payload: String, action: String): Data {
