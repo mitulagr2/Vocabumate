@@ -22,10 +22,10 @@ private const val KEY_PREFERENCES_LAST_TIME = "last_time"
 private const val KEY_PREFERENCES_DAILY_WORD = "daily_word"
 
 data class UserPreferences(
-  val reviseSet: Set<String>,
-  val dailyStreak: Int,
-  val lastTime: Int,
-  val dailyWord: String
+  val reviseSet: Set<String> = setOf(),
+  val dailyStreak: Int = 0,
+  val lastTime: Int = 0,
+  val dailyWord: String = Json.encodeToString(Word("", ""))
 )
 
 /**
@@ -33,7 +33,7 @@ data class UserPreferences(
  */
 class UserPreferencesRepository(private val dataStore: DataStore<Preferences>) {
 
-  private object PreferencesKeys {
+  object PreferencesKeys {
     val REVISE_SET = stringSetPreferencesKey(KEY_PREFERENCES_REVISE_SET)
     val DAILY_STREAK = intPreferencesKey(KEY_PREFERENCES_DAILY_STREAK)
     val LAST_TIME = intPreferencesKey(KEY_PREFERENCES_LAST_TIME)
@@ -73,27 +73,6 @@ class UserPreferencesRepository(private val dataStore: DataStore<Preferences>) {
       }
 
       preferences[PreferencesKeys.REVISE_SET] = newSet
-    }
-  }
-
-  suspend fun updateDailyStreak() {
-    dataStore.edit { preferences ->
-      val prev = preferences[PreferencesKeys.LAST_TIME] ?: 1
-      val today = (System.currentTimeMillis() / (1000 * 3600 * 24)).toInt()
-      preferences[PreferencesKeys.LAST_TIME] = today
-
-      if (today - prev == 1) {
-        val curStreak = preferences[PreferencesKeys.DAILY_STREAK] ?: 0
-        preferences[PreferencesKeys.DAILY_STREAK] = curStreak + 1
-      } else if (today - prev > 1) {
-        preferences[PreferencesKeys.DAILY_STREAK] = 1
-      }
-    }
-  }
-
-  suspend fun updateDailyWord(newDaily: Word) {
-    dataStore.edit { preferences ->
-      preferences[PreferencesKeys.DAILY_WORD] = Json.encodeToString(newDaily)
     }
   }
 }

@@ -21,4 +21,4 @@ class DefaultAppContainer(context: Context) : AppContainer {
   }
 }
 
-private val Context.dataStore by preferencesDataStore(name = USER_PREFERENCES_NAME)
+val Context.dataStore by preferencesDataStore(name = USER_PREFERENCES_NAME)

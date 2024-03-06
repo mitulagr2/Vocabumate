@@ -2,6 +2,7 @@ package com.example.vocabumate.workers
 
 import android.content.Context
 import android.util.Log
+import androidx.datastore.preferences.core.edit
 import androidx.work.CoroutineWorker
 import androidx.work.WorkerParameters
 import androidx.work.workDataOf
@@ -10,10 +11,11 @@ import com.example.vocabumate.KEY_OUTPUT_DATA
 import com.example.vocabumate.KEY_OUTPUT_TYPE
 import com.example.vocabumate.KEY_PAYLOAD
 import com.example.vocabumate.data.Word
+import com.example.vocabumate.data.dataStore
+import com.example.vocabumate.data.local.UserPreferencesRepository
 import com.example.vocabumate.data.network.WordApiService
 import kotlinx.coroutines.Dispatchers
 import kotlinx.coroutines.withContext
-import kotlinx.serialization.decodeFromString
 import kotlinx.serialization.json.Json
 import okhttp3.OkHttpClient
 import retrofit2.Retrofit
@@ -47,8 +49,14 @@ class FetchWorker(ctx: Context, params: WorkerParameters) : CoroutineWorker(ctx,
     return when (type) {
       "DAILY" -> {
         val output = retrofitService.getDaily()
+        val newWord = Json.decodeFromString<Word>(output)
+
+        applicationContext.dataStore.edit { preferences ->
+          preferences[UserPreferencesRepository.PreferencesKeys.DAILY_WORD] = output
+        }
+
         makeStatusNotification(
-          "Today's word of the day is: ${Json.decodeFromString<Word>(output).word}!",
+          "Today's word of the day is: ${newWord.word}!",
           applicationContext
         )
         output

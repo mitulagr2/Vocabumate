@@ -7,6 +7,7 @@ import androidx.lifecycle.viewmodel.CreationExtras
 import androidx.lifecycle.viewmodel.initializer
 import androidx.lifecycle.viewmodel.viewModelFactory
 import com.example.vocabumate.VocabumateApplication
+import com.example.vocabumate.ui.viewmodels.DailyViewModel
 import com.example.vocabumate.ui.viewmodels.HomeViewModel
 import com.example.vocabumate.ui.viewmodels.LikesViewModel
 import com.example.vocabumate.ui.viewmodels.WordDetailsViewModel
@@ -30,7 +31,15 @@ object AppViewModelProvider {
     // Initializer for HomeViewModel
     initializer {
       HomeViewModel(
-        vocabumateApplication().container.workManagerWordsRepository
+        vocabumateApplication().container.workManagerWordsRepository,
+        vocabumateApplication().container.userPreferencesRepository
+      )
+    }
+    // Initializer for DailyViewModel
+    initializer {
+      DailyViewModel(
+        vocabumateApplication().container.workManagerWordsRepository,
+        vocabumateApplication().container.userPreferencesRepository
       )
     }
   }
