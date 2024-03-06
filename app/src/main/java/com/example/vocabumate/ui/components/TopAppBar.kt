@@ -30,6 +30,7 @@ import androidx.compose.runtime.setValue
 import androidx.compose.ui.Modifier
 import androidx.compose.ui.draw.shadow
 import androidx.compose.ui.graphics.Color
+import androidx.compose.ui.res.painterResource
 import androidx.compose.ui.res.stringResource
 import androidx.compose.ui.tooling.preview.Preview
 import androidx.compose.ui.unit.dp
@@ -116,7 +117,7 @@ fun TopAppBar(
               style = MaterialTheme.typography.displaySmall
             )
             Icon(
-              Icons.Filled.ThumbUp,
+              painter = painterResource(R.drawable.local_fire_department),
               contentDescription = "Daily streak",
               tint = Color.Red,
               modifier = Modifier.padding(horizontal = 8.dp)
