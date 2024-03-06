@@ -5,7 +5,10 @@ import retrofit2.http.Query
 
 interface WordApiService {
   @GET("define")
-  suspend fun getDefinition(
+  suspend fun getWord(
     @Query("word") word: String
   ): String
+
+  @GET("daily")
+  suspend fun getDaily(): String
 }

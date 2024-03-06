@@ -4,12 +4,12 @@ import androidx.compose.foundation.border
 import androidx.compose.foundation.clickable
 import androidx.compose.foundation.layout.Arrangement
 import androidx.compose.foundation.layout.Column
-import androidx.compose.foundation.layout.IntrinsicSize
 import androidx.compose.foundation.layout.Row
 import androidx.compose.foundation.layout.fillMaxWidth
-import androidx.compose.foundation.layout.height
 import androidx.compose.foundation.layout.padding
+import androidx.compose.foundation.rememberScrollState
 import androidx.compose.foundation.shape.RoundedCornerShape
+import androidx.compose.foundation.verticalScroll
 import androidx.compose.material.icons.Icons
 import androidx.compose.material.icons.filled.FavoriteBorder
 import androidx.compose.material3.Icon
@@ -30,8 +30,8 @@ import com.example.vocabumate.ui.theme.VocabumateTheme
 
 data class CardData(
   val info: Word,
-  val likeAction: () -> Unit,
-  val icon: ImageVector,
+  val likeAction: () -> Unit = {},
+  val icon: ImageVector = Icons.Filled.FavoriteBorder,
   val isRevise: Boolean = false,
   val surfaceAction: () -> Unit = {}
 )
@@ -43,13 +43,13 @@ fun FlashCard(
 ) {
   Surface(
     modifier = modifier
-      .padding(32.dp)
       .border(width = 1.dp, color = Color(0xA3DDDDDD), shape = RoundedCornerShape(8.dp))
       .clickable(enabled = data.isRevise) { data.surfaceAction() }
   ) {
     Column(
       modifier = Modifier
         .padding(32.dp)
+        .verticalScroll(rememberScrollState())
     ) {
       Row(
         verticalAlignment = Alignment.CenterVertically,
@@ -59,14 +59,16 @@ fun FlashCard(
           .fillMaxWidth()
       ) {
         Text(
-          text = data.info.word.capitalize(),
+          text = if(data.info.word.isNotEmpty()) data.info.word.capitalize() else "",
           style = MaterialTheme.typography.displayMedium
         )
-        IconButton(
-          onClick = data.likeAction,
-          modifier = Modifier.padding(top = 4.dp)
-        ) {
-          Icon(data.icon, contentDescription = "Like")
+        if (!data.isRevise) {
+          IconButton(
+            onClick = data.likeAction,
+            modifier = Modifier.padding(top = 4.dp)
+          ) {
+            Icon(data.icon, contentDescription = "Like")
+          }
         }
       }
       Text(

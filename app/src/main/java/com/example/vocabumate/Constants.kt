@@ -10,10 +10,12 @@ const val CHANNEL_ID = "VERBOSE_NOTIFICATION"
 const val NOTIFICATION_ID = 1
 
 const val GET_WORD_WORK_NAME = "get_word_work"
+const val GET_DAILY_WORK_NAME = "get_daily_work"
 const val MODIFY_WORD_WORK_NAME = "modify_word_work"
 
 // Other keys
 const val TAG_OUTPUT = "OUTPUT"
+const val TAG_DAILY = "DAILY"
 const val KEY_PAYLOAD = "KEY_ACTION_PAYLOAD"
 const val KEY_ACTION = "KEY_ACTION_TYPE"
 const val KEY_OUTPUT_DATA = "KEY_OUTPUT_DATA"

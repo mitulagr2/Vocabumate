@@ -13,6 +13,7 @@ import com.example.vocabumate.KEY_OUTPUT_TYPE
 import com.example.vocabumate.WORD_LOADING_MESSAGE
 import com.example.vocabumate.data.Word
 import com.example.vocabumate.data.WordsRepository
+import com.example.vocabumate.data.local.UserPreferencesRepository
 import com.example.vocabumate.ui.screens.WordDetailsDestination
 import kotlinx.coroutines.flow.SharingStarted
 import kotlinx.coroutines.flow.StateFlow
@@ -25,10 +26,19 @@ import kotlinx.serialization.json.Json
  */
 class WordDetailsViewModel(
   savedStateHandle: SavedStateHandle,
-  private val workManagerWordsRepository: WordsRepository
+  private val workManagerWordsRepository: WordsRepository,
+  private val userPreferencesRepository: UserPreferencesRepository
 ) : ViewModel() {
 
   private val word: String = checkNotNull(savedStateHandle[WordDetailsDestination.wordArg])
+
+  val allLocalWordsState: StateFlow<List<Word>> =
+    workManagerWordsRepository.getAllWordsStream()
+      .stateIn(
+        scope = viewModelScope,
+        started = SharingStarted.WhileSubscribed(TIMEOUT_MILLIS),
+        initialValue = listOf()
+      )
 
   init {
     workManagerWordsRepository.getWord(word)
@@ -78,5 +88,9 @@ class WordDetailsViewModel(
   fun deleteWord() {
     isSaved = false
     workManagerWordsRepository.deleteWord(wordDetailsState.value)
+  }
+
+  suspend fun initReviseSet() {
+    userPreferencesRepository.updateReviseSet(allLocalWordsState.value, "")
   }
 }

@@ -47,11 +47,6 @@ class RoomWorker(ctx: Context, params: WorkerParameters) : CoroutineWorker(ctx, 
     val payload = inputData.getString(KEY_PAYLOAD) ?: ""
     val action = inputData.getString(KEY_ACTION) ?: ""
 
-    makeStatusNotification(
-      "accessing_room",
-      applicationContext
-    )
-
     return withContext(Dispatchers.IO) {
       return@withContext try {
 

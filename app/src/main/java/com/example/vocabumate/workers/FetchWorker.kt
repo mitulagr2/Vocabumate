@@ -5,12 +5,17 @@ import android.util.Log
 import androidx.work.CoroutineWorker
 import androidx.work.WorkerParameters
 import androidx.work.workDataOf
+import com.example.vocabumate.KEY_ACTION
 import com.example.vocabumate.KEY_OUTPUT_DATA
 import com.example.vocabumate.KEY_OUTPUT_TYPE
 import com.example.vocabumate.KEY_PAYLOAD
+import com.example.vocabumate.data.Word
+import com.example.vocabumate.data.dataStore
+import com.example.vocabumate.data.local.UserPreferencesRepository
 import com.example.vocabumate.data.network.WordApiService
 import kotlinx.coroutines.Dispatchers
 import kotlinx.coroutines.withContext
+import kotlinx.serialization.json.Json
 import okhttp3.OkHttpClient
 import retrofit2.Retrofit
 import retrofit2.converter.scalars.ScalarsConverterFactory
@@ -19,6 +24,9 @@ import java.util.concurrent.TimeUnit
 private const val TAG = "FetchWorker"
 
 class FetchWorker(ctx: Context, params: WorkerParameters) : CoroutineWorker(ctx, params) {
+
+  private val userPreferencesRepository: UserPreferencesRepository =
+    UserPreferencesRepository(applicationContext.dataStore)
 
   private val baseUrl =
     "https://vocabumate.onrender.com"
@@ -39,18 +47,33 @@ class FetchWorker(ctx: Context, params: WorkerParameters) : CoroutineWorker(ctx,
     retrofit.create(WordApiService::class.java)
   }
 
+  private suspend fun handleFetchAction(type: String, payload: String): String {
+    return when (type) {
+      "DAILY" -> {
+        val output = retrofitService.getDaily()
+        val newWord = Json.decodeFromString<Word>(output)
+
+        userPreferencesRepository.updateDailyWord(newWord)
+
+        makeStatusNotification(
+          "Today's word of the day is: ${newWord.word}!",
+          applicationContext
+        )
+        output
+      }
+
+      else -> retrofitService.getWord(payload)
+    }
+  }
+
   override suspend fun doWork(): Result {
     val payload = inputData.getString(KEY_PAYLOAD) ?: ""
-
-    makeStatusNotification(
-      "fetching_word",
-      applicationContext
-    )
+    val action = inputData.getString(KEY_ACTION) ?: ""
 
     return withContext(Dispatchers.IO) {
       return@withContext try {
 
-        val output = retrofitService.getDefinition(payload)
+        val output = handleFetchAction(type = action, payload = payload)
         val outputData = workDataOf(KEY_OUTPUT_DATA to output, KEY_OUTPUT_TYPE to "REMOTE")
         Result.success(outputData)
 

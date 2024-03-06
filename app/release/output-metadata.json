@@ -11,9 +11,9 @@
       "type": "SINGLE",
       "filters": [],
       "attributes": [],
-      "versionCode": 1.8,
-      "versionName": "1.8",
-      "outputFile": "Vocabumate-release-1.8.apk"
+      "versionCode": 2,
+      "versionName": "beta",
+      "outputFile": "Vocabumate-release-v2.apk"
     }
   ],
   "elementType": "File"
