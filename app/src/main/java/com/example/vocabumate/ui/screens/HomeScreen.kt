@@ -12,7 +12,6 @@ import androidx.compose.foundation.rememberScrollState
 import androidx.compose.material3.MaterialTheme
 import androidx.compose.material3.Text
 import androidx.compose.runtime.Composable
-import androidx.compose.runtime.LaunchedEffect
 import androidx.compose.runtime.collectAsState
 import androidx.compose.runtime.getValue
 import androidx.compose.runtime.rememberCoroutineScope
@@ -46,10 +45,6 @@ fun HomeScreen(
   val preferencesState by viewModel.preferencesState.collectAsState()
   val coroutineScope = rememberCoroutineScope()
 
-  LaunchedEffect(localList.size) {
-    if (localList.size == 3) viewModel.updateReviseSet()
-  }
-
   Column {
     Column(
       modifier = modifier
@@ -60,7 +55,9 @@ fun HomeScreen(
         Text(
           text = "Revise",
           style = MaterialTheme.typography.headlineMedium,
-          modifier = Modifier.padding(start = 32.dp).fillMaxWidth()
+          modifier = Modifier
+            .padding(start = 32.dp)
+            .fillMaxWidth()
         )
       }
       Spacer(modifier = Modifier.height(40.dp))
@@ -88,7 +85,9 @@ fun HomeScreen(
         Text(
           text = "Add more words to start revising.",
           style = MaterialTheme.typography.bodyLarge,
-          modifier = Modifier.padding(start = 32.dp).fillMaxWidth()
+          modifier = Modifier
+            .padding(start = 32.dp)
+            .fillMaxWidth()
         )
       }
     }

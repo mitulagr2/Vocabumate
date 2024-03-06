@@ -49,7 +49,9 @@ fun InputBottomBar(
     TextField(
       value = query,
       singleLine = true,
-      modifier = Modifier.weight(1F).fillMaxHeight(),
+      modifier = Modifier
+        .weight(1F)
+        .fillMaxHeight(),
       colors = TextFieldDefaults.colors(
         focusedContainerColor = Color.Transparent,
         unfocusedContainerColor = Color.Transparent,
@@ -66,11 +68,17 @@ fun InputBottomBar(
         imeAction = ImeAction.Go
       ),
       keyboardActions = KeyboardActions(
-        onDone = { navigateToWordDetails(query.lowercase()) }
+        onGo = {
+          navigateToWordDetails(query.trim().replace(Regex("\\s+"), " ").lowercase())
+          query = ""
+        }
       )
     )
     FloatingActionButton(
-      onClick = { navigateToWordDetails(query.lowercase()) }
+      onClick = {
+        navigateToWordDetails(query.trim().replace(Regex("\\s+"), " ").lowercase())
+        query = ""
+      }
     ) {
       Icon(Icons.Filled.Search, contentDescription = "Search")
     }

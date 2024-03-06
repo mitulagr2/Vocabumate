@@ -2,7 +2,6 @@ package com.example.vocabumate.workers
 
 import android.content.Context
 import android.util.Log
-import androidx.datastore.preferences.core.edit
 import androidx.work.CoroutineWorker
 import androidx.work.WorkerParameters
 import androidx.work.workDataOf
@@ -25,6 +24,9 @@ import java.util.concurrent.TimeUnit
 private const val TAG = "FetchWorker"
 
 class FetchWorker(ctx: Context, params: WorkerParameters) : CoroutineWorker(ctx, params) {
+
+  private val userPreferencesRepository: UserPreferencesRepository =
+    UserPreferencesRepository(applicationContext.dataStore)
 
   private val baseUrl =
     "https://vocabumate.onrender.com"
@@ -51,9 +53,7 @@ class FetchWorker(ctx: Context, params: WorkerParameters) : CoroutineWorker(ctx,
         val output = retrofitService.getDaily()
         val newWord = Json.decodeFromString<Word>(output)
 
-        applicationContext.dataStore.edit { preferences ->
-          preferences[UserPreferencesRepository.PreferencesKeys.DAILY_WORD] = output
-        }
+        userPreferencesRepository.updateDailyWord(newWord)
 
         makeStatusNotification(
           "Today's word of the day is: ${newWord.word}!",

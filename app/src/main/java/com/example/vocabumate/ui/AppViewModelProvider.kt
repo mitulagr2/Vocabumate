@@ -10,6 +10,7 @@ import com.example.vocabumate.VocabumateApplication
 import com.example.vocabumate.ui.viewmodels.DailyViewModel
 import com.example.vocabumate.ui.viewmodels.HomeViewModel
 import com.example.vocabumate.ui.viewmodels.LikesViewModel
+import com.example.vocabumate.ui.viewmodels.TopAppBarViewModel
 import com.example.vocabumate.ui.viewmodels.WordDetailsViewModel
 
 /**
@@ -17,11 +18,18 @@ import com.example.vocabumate.ui.viewmodels.WordDetailsViewModel
  */
 object AppViewModelProvider {
   val Factory = viewModelFactory {
+    // Initializer for TopAppBarViewModel
+    initializer {
+      TopAppBarViewModel(
+        vocabumateApplication().container.userPreferencesRepository
+      )
+    }
     // Initializer for WordDetailsViewModel
     initializer {
       WordDetailsViewModel(
         this.createSavedStateHandle(),
-        vocabumateApplication().container.workManagerWordsRepository
+        vocabumateApplication().container.workManagerWordsRepository,
+        vocabumateApplication().container.userPreferencesRepository
       )
     }
     // Initializer for LikesViewModel

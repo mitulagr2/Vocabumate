@@ -16,8 +16,16 @@ import kotlinx.serialization.json.Json
 
 class DailyViewModel(
   private val workManagerWordsRepository: WordsRepository,
-  userPreferencesRepository: UserPreferencesRepository
+  private val userPreferencesRepository: UserPreferencesRepository
 ) : ViewModel() {
+
+  val allLocalWordsState: StateFlow<List<Word>> =
+    workManagerWordsRepository.getAllWordsStream()
+      .stateIn(
+        scope = viewModelScope,
+        started = SharingStarted.WhileSubscribed(TIMEOUT_MILLIS),
+        initialValue = listOf()
+      )
 
   val preferencesState: StateFlow<UserPreferences> =
     userPreferencesRepository.userPreferencesFlow
@@ -38,6 +46,10 @@ class DailyViewModel(
   fun deleteWord() {
     isSaved = false
     workManagerWordsRepository.deleteWord(Json.decodeFromString(preferencesState.value.dailyWord))
+  }
+
+  suspend fun initReviseSet() {
+    userPreferencesRepository.updateReviseSet(allLocalWordsState.value, "")
   }
 
   companion object {

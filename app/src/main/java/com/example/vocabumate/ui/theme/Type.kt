@@ -1,6 +1,7 @@
 package com.example.vocabumate.ui.theme
 
 import androidx.compose.material3.Typography
+import androidx.compose.ui.graphics.Color
 import androidx.compose.ui.text.TextStyle
 import androidx.compose.ui.text.font.Font
 import androidx.compose.ui.text.font.FontFamily
@@ -27,7 +28,9 @@ val Typography = Typography(
     fontSize = 18.sp
   ),
   displaySmall = TextStyle(
-    fontFamily = Oregano
+    fontFamily = Pacifico,
+    fontSize = 18.sp,
+    color = Color.Red
   ),
   headlineLarge = TextStyle(
     fontFamily = Oregano

@@ -11,6 +11,7 @@ import androidx.compose.material.icons.Icons
 import androidx.compose.material.icons.filled.DateRange
 import androidx.compose.material.icons.filled.Person
 import androidx.compose.material.icons.filled.Star
+import androidx.compose.material.icons.filled.ThumbUp
 import androidx.compose.material3.ExperimentalMaterial3Api
 import androidx.compose.material3.Icon
 import androidx.compose.material3.IconButton
@@ -20,6 +21,7 @@ import androidx.compose.material3.Text
 import androidx.compose.material3.TopAppBar
 import androidx.compose.material3.TopAppBarScrollBehavior
 import androidx.compose.runtime.Composable
+import androidx.compose.runtime.collectAsState
 import androidx.compose.runtime.getValue
 import androidx.compose.runtime.mutableStateOf
 import androidx.compose.runtime.remember
@@ -28,15 +30,14 @@ import androidx.compose.runtime.setValue
 import androidx.compose.ui.Modifier
 import androidx.compose.ui.draw.shadow
 import androidx.compose.ui.graphics.Color
-import androidx.compose.ui.platform.LocalContext
 import androidx.compose.ui.res.stringResource
 import androidx.compose.ui.tooling.preview.Preview
 import androidx.compose.ui.unit.dp
-import androidx.datastore.preferences.core.edit
+import androidx.lifecycle.viewmodel.compose.viewModel
 import com.example.vocabumate.R
-import com.example.vocabumate.data.dataStore
-import com.example.vocabumate.data.local.UserPreferencesRepository
+import com.example.vocabumate.ui.AppViewModelProvider
 import com.example.vocabumate.ui.theme.VocabumateTheme
+import com.example.vocabumate.ui.viewmodels.TopAppBarViewModel
 import kotlinx.coroutines.launch
 
 /**
@@ -52,7 +53,8 @@ fun TopAppBar(
   navigateToAnalytics: () -> Unit,
   navigateToProfile: () -> Unit,
   modifier: Modifier = Modifier,
-  scrollBehavior: TopAppBarScrollBehavior? = null
+  scrollBehavior: TopAppBarScrollBehavior? = null,
+  viewModel: TopAppBarViewModel = viewModel(factory = AppViewModelProvider.Factory)
 ) {
   val menu = listOf(
     MenuData(
@@ -86,7 +88,7 @@ fun TopAppBar(
   }
 
   val coroutineScope = rememberCoroutineScope()
-  val context = LocalContext.current
+  val preferencesState by viewModel.preferencesState.collectAsState()
 
   Surface(
     modifier = modifier
@@ -108,27 +110,25 @@ fun TopAppBar(
           )
         },
         actions = {
+          if (preferencesState.dailyStreak > 1) {
+            Text(
+              text = preferencesState.dailyStreak.toString(),
+              style = MaterialTheme.typography.displaySmall
+            )
+            Icon(
+              Icons.Filled.ThumbUp,
+              contentDescription = "Daily streak",
+              tint = Color.Red,
+              modifier = Modifier.padding(horizontal = 8.dp)
+            )
+          }
           IconButton(
             onClick = {
               navigateToDaily()
               coroutineScope.launch {
-                context.dataStore.edit { preferences ->
-                  val prev = preferences[UserPreferencesRepository.PreferencesKeys.LAST_TIME] ?: 1
-                  val today = (System.currentTimeMillis() / (1000 * 3600 * 24)).toInt()
-                  preferences[UserPreferencesRepository.PreferencesKeys.LAST_TIME] = today
-
-                  if (today - prev == 1) {
-                    val curStreak =
-                      preferences[UserPreferencesRepository.PreferencesKeys.DAILY_STREAK] ?: 0
-                    preferences[UserPreferencesRepository.PreferencesKeys.DAILY_STREAK] =
-                      curStreak + 1
-                  } else if (today - prev > 1) {
-                    preferences[UserPreferencesRepository.PreferencesKeys.DAILY_STREAK] = 1
-                  }
-                }
+                viewModel.updateDailyStreak()
               }
-            },
-            modifier = Modifier.padding(top = 8.dp)
+            }
           ) {
             Icon(Icons.Filled.DateRange, contentDescription = "Daily word")
           }

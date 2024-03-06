@@ -12,7 +12,7 @@ import kotlinx.coroutines.flow.stateIn
  * ViewModel to retrieve all words in the Room database.
  */
 class LikesViewModel(
-  workManagerWordsRepository: WordsRepository
+  private val workManagerWordsRepository: WordsRepository
 ) : ViewModel() {
 
   val allLocalWordsState: StateFlow<List<Word>> =
@@ -22,6 +22,10 @@ class LikesViewModel(
         started = SharingStarted.WhileSubscribed(TIMEOUT_MILLIS),
         initialValue = listOf()
       )
+
+  fun deleteWord(word: Word) {
+    workManagerWordsRepository.deleteWord(word)
+  }
 
   companion object {
     private const val TIMEOUT_MILLIS = 5_000L

@@ -6,6 +6,7 @@ import androidx.compose.material.icons.Icons
 import androidx.compose.material.icons.filled.Favorite
 import androidx.compose.material.icons.filled.FavoriteBorder
 import androidx.compose.runtime.Composable
+import androidx.compose.runtime.LaunchedEffect
 import androidx.compose.runtime.collectAsState
 import androidx.compose.runtime.getValue
 import androidx.compose.runtime.rememberCoroutineScope
@@ -33,7 +34,12 @@ fun WordDetailsScreen(
   viewModel: WordDetailsViewModel = viewModel(factory = AppViewModelProvider.Factory)
 ) {
   val coroutineScope = rememberCoroutineScope()
+  val localList by viewModel.allLocalWordsState.collectAsState()
   val wordDetailsUiState by viewModel.wordDetailsState.collectAsState()
+
+  LaunchedEffect(localList.size) {
+    if (localList.size == 3) viewModel.initReviseSet()
+  }
 
   Column(modifier = modifier.padding(horizontal = 32.dp, vertical = 24.dp)) {
     FlashCard(

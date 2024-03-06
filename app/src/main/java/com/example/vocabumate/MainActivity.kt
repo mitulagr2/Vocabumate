@@ -29,4 +29,4 @@ fun String.capitalize() =
   this.substring(0, 1).uppercase() + this.substring(1).lowercase()
 
 fun String.sanitizeWord() =
-  Regex("^[a-zA-Z ]*$").replace(this.trim().replace(Regex("\\s+"), " "), "")
+  Regex("^[^a-zA-Z ]*$").replace(this, "")

@@ -12,6 +12,7 @@ import androidx.compose.material.icons.filled.FavoriteBorder
 import androidx.compose.material3.MaterialTheme
 import androidx.compose.material3.Text
 import androidx.compose.runtime.Composable
+import androidx.compose.runtime.LaunchedEffect
 import androidx.compose.runtime.collectAsState
 import androidx.compose.runtime.getValue
 import androidx.compose.runtime.rememberCoroutineScope
@@ -38,7 +39,12 @@ fun DailyScreen(
   viewModel: DailyViewModel = viewModel(factory = AppViewModelProvider.Factory)
 ) {
   val coroutineScope = rememberCoroutineScope()
+  val localList by viewModel.allLocalWordsState.collectAsState()
   val preferencesState by viewModel.preferencesState.collectAsState()
+
+  LaunchedEffect(localList.size) {
+    if (localList.size == 3) viewModel.initReviseSet()
+  }
 
   Column(modifier = modifier.padding(horizontal = 32.dp, vertical = 24.dp)) {
     Row {
