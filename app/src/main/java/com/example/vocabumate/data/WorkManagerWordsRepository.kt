@@ -126,7 +126,7 @@ class WorkManagerWordsRepository(context: Context) : WordsRepository {
     workManager
       .enqueueUniquePeriodicWork(
         GET_DAILY_WORK_NAME,
-        ExistingPeriodicWorkPolicy.CANCEL_AND_REENQUEUE,
+        ExistingPeriodicWorkPolicy.KEEP,
         fetchBuilder.build()
       )
   }

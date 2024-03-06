@@ -23,15 +23,21 @@ import androidx.compose.runtime.Composable
 import androidx.compose.runtime.getValue
 import androidx.compose.runtime.mutableStateOf
 import androidx.compose.runtime.remember
+import androidx.compose.runtime.rememberCoroutineScope
 import androidx.compose.runtime.setValue
 import androidx.compose.ui.Modifier
 import androidx.compose.ui.draw.shadow
 import androidx.compose.ui.graphics.Color
+import androidx.compose.ui.platform.LocalContext
 import androidx.compose.ui.res.stringResource
 import androidx.compose.ui.tooling.preview.Preview
 import androidx.compose.ui.unit.dp
+import androidx.datastore.preferences.core.edit
 import com.example.vocabumate.R
+import com.example.vocabumate.data.dataStore
+import com.example.vocabumate.data.local.UserPreferencesRepository
 import com.example.vocabumate.ui.theme.VocabumateTheme
+import kotlinx.coroutines.launch
 
 /**
  * App bar to display title and navigation.
@@ -79,6 +85,9 @@ fun TopAppBar(
     mutableStateOf(false)
   }
 
+  val coroutineScope = rememberCoroutineScope()
+  val context = LocalContext.current
+
   Surface(
     modifier = modifier
       .shadow(
@@ -100,7 +109,25 @@ fun TopAppBar(
         },
         actions = {
           IconButton(
-            onClick = { navigateToDaily() },
+            onClick = {
+              navigateToDaily()
+              coroutineScope.launch {
+                context.dataStore.edit { preferences ->
+                  val prev = preferences[UserPreferencesRepository.PreferencesKeys.LAST_TIME] ?: 1
+                  val today = (System.currentTimeMillis() / (1000 * 3600 * 24)).toInt()
+                  preferences[UserPreferencesRepository.PreferencesKeys.LAST_TIME] = today
+
+                  if (today - prev == 1) {
+                    val curStreak =
+                      preferences[UserPreferencesRepository.PreferencesKeys.DAILY_STREAK] ?: 0
+                    preferences[UserPreferencesRepository.PreferencesKeys.DAILY_STREAK] =
+                      curStreak + 1
+                  } else if (today - prev > 1) {
+                    preferences[UserPreferencesRepository.PreferencesKeys.DAILY_STREAK] = 1
+                  }
+                }
+              }
+            },
             modifier = Modifier.padding(top = 8.dp)
           ) {
             Icon(Icons.Filled.DateRange, contentDescription = "Daily word")
