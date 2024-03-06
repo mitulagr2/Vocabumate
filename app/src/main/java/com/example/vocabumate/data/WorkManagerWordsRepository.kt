@@ -124,6 +124,13 @@ class WorkManagerWordsRepository(context: Context) : WordsRepository {
       .setConstraints(remoteConstraints)
       .setInputData(createInputDataForWorkRequest("", "DAILY"))
 
+    workManager.beginWith(
+      OneTimeWorkRequestBuilder<FetchWorker>()
+      .setConstraints(remoteConstraints)
+      .setInputData(createInputDataForWorkRequest("", "DAILY"))
+        .build()
+    ).enqueue()
+
     workManager
       .enqueueUniquePeriodicWork(
         GET_DAILY_WORK_NAME,
