@@ -7,7 +7,6 @@ import kotlinx.serialization.Serializable
 /**
  * Entity data class represents a single row in the database.
  */
-
 @Serializable
 @Entity(tableName = "words")
 data class Word(

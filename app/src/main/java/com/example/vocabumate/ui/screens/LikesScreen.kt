@@ -21,6 +21,7 @@ import androidx.compose.material3.Text
 import androidx.compose.runtime.Composable
 import androidx.compose.runtime.collectAsState
 import androidx.compose.runtime.getValue
+import androidx.compose.runtime.rememberCoroutineScope
 import androidx.compose.ui.Alignment
 import androidx.compose.ui.Modifier
 import androidx.compose.ui.graphics.Color
@@ -32,7 +33,8 @@ import com.example.vocabumate.capitalize
 import com.example.vocabumate.data.Word
 import com.example.vocabumate.ui.AppViewModelProvider
 import com.example.vocabumate.ui.navigation.NavigationDestination
-import com.example.vocabumate.ui.viewmodels.LikesViewModel
+import com.example.vocabumate.ui.viewmodels.WordsViewModel
+import kotlinx.coroutines.launch
 
 object LikesDestination : NavigationDestination {
   override val route = "likes"
@@ -43,8 +45,9 @@ object LikesDestination : NavigationDestination {
 fun LikesScreen(
   navigateToWordDetails: (String) -> Unit,
   modifier: Modifier = Modifier,
-  viewModel: LikesViewModel = viewModel(factory = AppViewModelProvider.Factory)
+  viewModel: WordsViewModel = viewModel(factory = AppViewModelProvider.Factory)
 ) {
+  val coroutineScope = rememberCoroutineScope()
   val localList by viewModel.allLocalWordsState.collectAsState()
 
   Column(
@@ -70,7 +73,7 @@ fun LikesScreen(
       WordList(
         wordList = localList,
         onWordClick = { navigateToWordDetails(it) },
-        unlikeWord = viewModel::deleteWord
+        unlikeWord = { coroutineScope.launch { viewModel.deleteWord(it) } }
       )
     }
   }

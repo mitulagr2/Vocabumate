@@ -94,9 +94,11 @@ class UserPreferencesRepository(private val dataStore: DataStore<Preferences>) {
     }
   }
 
-  suspend fun updateDailyWord(newDaily: Word) {
+  suspend fun updateDailyWord(newDaily: String) {
     dataStore.edit { preferences ->
-      preferences[PreferencesKeys.DAILY_WORD] = Json.encodeToString(newDaily)
+      preferences[PreferencesKeys.DAILY_WORD] = newDaily
+      val today = (System.currentTimeMillis() / (1000 * 3600 * 24)).toInt()
+      preferences[PreferencesKeys.LAST_TIME] = today
     }
   }
 }
