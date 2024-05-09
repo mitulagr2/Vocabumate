@@ -8,8 +8,6 @@ import kotlinx.coroutines.flow.Flow
  * Repository that provides insert, update, delete, and retrieve of [Word] from a given data source.
  */
 interface LocalWordsRepository {
-  val outputWorkInfo: Flow<WorkInfo>
-
   /**
    * Retrieve all the items from the given data source.
    */
@@ -18,15 +16,15 @@ interface LocalWordsRepository {
   /**
    * Retrieve an item from the given data source that matches with the [word].
    */
-  fun getWord(word: String)
+  fun getWord(word: String): Word?
 
   /**
    * Insert item in the data source
    */
-  fun insertWord(word: Word)
+  suspend fun insertWord(word: Word)
 
   /**
    * Delete item from the data source
    */
-  fun deleteWord(word: Word)
+  suspend fun deleteWord(word: Word)
 }

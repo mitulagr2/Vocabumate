@@ -6,14 +6,14 @@ import com.example.vocabumate.data.local.USER_PREFERENCES_NAME
 import com.example.vocabumate.data.local.UserPreferencesRepository
 
 interface AppContainer {
-  val workManagerWordsRepository: WordsRepository
+  val wordsRepository: WordsRepository
   val userPreferencesRepository: UserPreferencesRepository
 }
 
 class DefaultAppContainer(context: Context) : AppContainer {
 
-  override val workManagerWordsRepository: WordsRepository by lazy {
-    WorkManagerWordsRepository(context)
+  override val wordsRepository: WordsRepository by lazy {
+    WordsRepository(context)
   }
 
   override val userPreferencesRepository: UserPreferencesRepository by lazy {

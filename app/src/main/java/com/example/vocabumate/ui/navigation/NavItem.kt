@@ -9,9 +9,7 @@ import androidx.compose.runtime.Composable
 import androidx.compose.ui.Modifier
 import androidx.navigation.NavHostController
 import com.example.vocabumate.ui.components.TopAppBar
-import com.example.vocabumate.ui.screens.AnalyticsDestination
 import com.example.vocabumate.ui.screens.DailyDestination
-import com.example.vocabumate.ui.screens.DiscoverDestination
 import com.example.vocabumate.ui.screens.HomeDestination
 import com.example.vocabumate.ui.screens.LikesDestination
 import com.example.vocabumate.ui.screens.ProfileDestination
@@ -30,8 +28,6 @@ fun NavItem(
         navigateToHome = { navController.popBackStack(HomeDestination.route, false) },
         navigateToDaily = { navController.navigate(DailyDestination.route) },
         navigateToLikes = { navController.navigate(LikesDestination.route) },
-        navigateToDiscover = { navController.navigate(DiscoverDestination.route) },
-        navigateToAnalytics = { navController.navigate(AnalyticsDestination.route) },
         navigateToProfile = { navController.navigate(ProfileDestination.route) },
 //        scrollBehavior = scrollBehavior
       )

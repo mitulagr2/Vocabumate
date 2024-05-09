@@ -26,7 +26,7 @@ import com.example.vocabumate.ui.components.CardData
 import com.example.vocabumate.ui.components.FlashCard
 import com.example.vocabumate.ui.components.InputBottomBar
 import com.example.vocabumate.ui.navigation.NavigationDestination
-import com.example.vocabumate.ui.viewmodels.HomeViewModel
+import com.example.vocabumate.ui.viewmodels.WordsViewModel
 import kotlinx.coroutines.launch
 import kotlinx.serialization.json.Json
 
@@ -39,7 +39,7 @@ object HomeDestination : NavigationDestination {
 fun HomeScreen(
   navigateToWordDetails: (String) -> Unit,
   modifier: Modifier = Modifier,
-  viewModel: HomeViewModel = viewModel(factory = AppViewModelProvider.Factory)
+  viewModel: WordsViewModel = viewModel(factory = AppViewModelProvider.Factory)
 ) {
   val localList by viewModel.allLocalWordsState.collectAsState()
   val preferencesState by viewModel.preferencesState.collectAsState()
@@ -83,7 +83,7 @@ fun HomeScreen(
         }
       } else {
         Text(
-          text = "Add more words to start revising.",
+          text = "Like more words to start revising.",
           style = MaterialTheme.typography.bodyLarge,
           modifier = Modifier
             .padding(start = 32.dp)
