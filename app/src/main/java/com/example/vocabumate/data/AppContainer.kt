@@ -19,6 +19,10 @@ class DefaultAppContainer(context: Context) : AppContainer {
   override val userPreferencesRepository: UserPreferencesRepository by lazy {
     UserPreferencesRepository(context.dataStore)
   }
+
+  override val userPreferencesRepository: UserPreferencesRepository by lazy {
+    UserPreferencesRepository(context.dataStore)
+  }
 }
 
 val Context.dataStore by preferencesDataStore(name = USER_PREFERENCES_NAME)

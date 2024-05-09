@@ -17,7 +17,6 @@ import androidx.compose.ui.Modifier
 import androidx.compose.ui.unit.dp
 import androidx.lifecycle.viewmodel.compose.viewModel
 import com.example.vocabumate.R
-import com.example.vocabumate.data.Word
 import com.example.vocabumate.ui.AppViewModelProvider
 import com.example.vocabumate.ui.components.CardData
 import com.example.vocabumate.ui.components.FlashCard

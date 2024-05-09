@@ -2,21 +2,11 @@
 
 ## Summary
 
-Vocabulary acquisition is a crucial aspect of language learning, but it can often be daunting and time-consuming. Many learners struggle to find effective ways to memorize new words and understand their usage in context. Enter Vocabumate, the ultimate solution for language enthusiasts looking to expand their lexicon effortlessly. By automating the process of fetching new words, their meanings, and contextual examples it significantly reduces the time and effort traditionally associated with vocabulary expansion.
+Memorize new words, understand their usage, and expand your lexicon effortlessly.
 
 ## Solution
 
-Language learners today face a range of issues such as limited exposure to new vocabulary, difficulties in retaining and applying newly learned words, grasping their contextual usage, and a general lack of curation, accessibility, and convenience in existing learning methods. Moreover, integrating vocabulary learning into daily life and maintaining consistency in learning habits pose additional hurdles.
-
-Vocabumate provides learners with a comprehensive platform by leveraging the vast database powered by Google Gemini AI. It offers extensive examples and contextual sentences, ensuring learners not only memorize words but also grasp their nuances and connotations. This approach fosters a deeper interpretation and retention, addressing the aforementioned challenges effectively.
-
-Vocabumate distinguishes itself through several innovative features. For starters, its automated word discovery personalizes the learning experience by sourcing new words daily, tailored to the user's preferences and learning goals. This ensures a steady stream of fresh vocabulary, crucial for continuous learning and retention.
-
-Interactive flashcards facilitate active recall and reinforce word memorization through an engaging and user-friendly interface. These flashcards are complemented by a Spaced Repetition System (SRS), which optimizes learning retention by intelligently scheduling review sessions based on the user's performance, ensuring that vocabulary is revisited at optimal intervals for long-term memory solidification.
-
-Moreover, Vocabumate offers offline access and cross-platform syncing, making learning accessible anytime, anywhere, and on any device. This flexibility, combined with features such as multilingual support, personalized daily goals, reminders, and progress tracking, empowers learners to stay motivated, track their growth, and achieve their language goals efficiently.
-
-Vocabumate's intuitive design, customization options, and emphasis on social learning further enhance the learning experience. It stands as a testament to the power of innovative technology in overcoming traditional barriers to language learning, paving the way for learners to effortlessly integrate vocabulary learning into their daily lives.
+Vocabumate automates the process of fetching new words, their meanings, and contextual examples, significantly reducing the time and effort traditionally associated with vocabulary expansion.
 
 ### Features
 
@@ -75,7 +65,7 @@ Multilingual support and personalized goal configuration.
 - Tech stack:
 
   - Frontend - Kotlin with Jetpack Compose
-  - Backend - SpringBoot
+  - Backend - Node.js
 
 - Expected constraints:
   - Google Gemini - 60 QPM (queries per minute)
