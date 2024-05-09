@@ -4,7 +4,7 @@ import androidx.work.WorkInfo
 import kotlinx.coroutines.flow.Flow
 
 interface RemoteWordsRepository {
-  val outputWorkInfo: Flow<WorkInfo>
-  val dailyWordInfo: Flow<WorkInfo>
-  fun getWord(word: String)
+  suspend fun getRemoteWord(word: String): String
+
+  suspend fun getRemoteDaily(): String
 }

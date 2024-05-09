@@ -7,46 +7,18 @@ import androidx.lifecycle.viewmodel.CreationExtras
 import androidx.lifecycle.viewmodel.initializer
 import androidx.lifecycle.viewmodel.viewModelFactory
 import com.example.vocabumate.VocabumateApplication
-import com.example.vocabumate.ui.viewmodels.DailyViewModel
-import com.example.vocabumate.ui.viewmodels.HomeViewModel
-import com.example.vocabumate.ui.viewmodels.LikesViewModel
-import com.example.vocabumate.ui.viewmodels.TopAppBarViewModel
-import com.example.vocabumate.ui.viewmodels.WordDetailsViewModel
+import com.example.vocabumate.ui.viewmodels.WordsViewModel
 
 /**
  * Provides Factory to create instance of ViewModel for the entire Vocabumate app
  */
 object AppViewModelProvider {
   val Factory = viewModelFactory {
-    // Initializer for TopAppBarViewModel
+    // Initializer for WordsViewModel
     initializer {
-      TopAppBarViewModel(
-        vocabumateApplication().container.userPreferencesRepository
-      )
-    }
-    // Initializer for WordDetailsViewModel
-    initializer {
-      WordDetailsViewModel(
+      WordsViewModel(
         this.createSavedStateHandle(),
-        vocabumateApplication().container.workManagerWordsRepository,
-        vocabumateApplication().container.userPreferencesRepository
-      )
-    }
-    // Initializer for LikesViewModel
-    initializer {
-      LikesViewModel(vocabumateApplication().container.workManagerWordsRepository)
-    }
-    // Initializer for HomeViewModel
-    initializer {
-      HomeViewModel(
-        vocabumateApplication().container.workManagerWordsRepository,
-        vocabumateApplication().container.userPreferencesRepository
-      )
-    }
-    // Initializer for DailyViewModel
-    initializer {
-      DailyViewModel(
-        vocabumateApplication().container.workManagerWordsRepository,
+        vocabumateApplication().container.wordsRepository,
         vocabumateApplication().container.userPreferencesRepository
       )
     }

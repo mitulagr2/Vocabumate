@@ -38,7 +38,7 @@ import androidx.lifecycle.viewmodel.compose.viewModel
 import com.example.vocabumate.R
 import com.example.vocabumate.ui.AppViewModelProvider
 import com.example.vocabumate.ui.theme.VocabumateTheme
-import com.example.vocabumate.ui.viewmodels.TopAppBarViewModel
+import com.example.vocabumate.ui.viewmodels.WordsViewModel
 import kotlinx.coroutines.launch
 
 /**
@@ -50,12 +50,10 @@ fun TopAppBar(
   navigateToHome: () -> Unit,
   navigateToDaily: () -> Unit,
   navigateToLikes: () -> Unit,
-  navigateToDiscover: () -> Unit,
-  navigateToAnalytics: () -> Unit,
   navigateToProfile: () -> Unit,
   modifier: Modifier = Modifier,
   scrollBehavior: TopAppBarScrollBehavior? = null,
-  viewModel: TopAppBarViewModel = viewModel(factory = AppViewModelProvider.Factory)
+  viewModel: WordsViewModel = viewModel(factory = AppViewModelProvider.Factory)
 ) {
   val menu = listOf(
     MenuData(
@@ -164,8 +162,6 @@ fun TopAppBarPreview() {
       navigateToHome = { },
       navigateToDaily = { },
       navigateToLikes = { },
-      navigateToDiscover = { },
-      navigateToAnalytics = { },
       navigateToProfile = { },
     )
   }
